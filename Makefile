@@ -6,9 +6,12 @@ SHELL := bash
 .DEFAULT_GOAL := help
 
 # Read POSTGRES_* from .env when it exists and pass them to every command make runs.
-# The leading "-" means "don't fail if .env is missing" (make setup creates it).
--include .env
+# Only when it exists: exporting an undefined variable exports it as an EMPTY string, and
+# docker compose lets shell variables override .env, so the empty value would win.
+ifneq (,$(wildcard .env))
+include .env
 export POSTGRES_USER POSTGRES_PASSWORD POSTGRES_DB POSTGRES_PORT POSTGRES_HOST
+endif
 
 UV      := uv
 COMPOSE := docker compose

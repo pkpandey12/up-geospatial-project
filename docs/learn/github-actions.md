@@ -12,7 +12,7 @@ tests, and that the PostGIS container starts and passes its smoke test.
 1. **Workflow → jobs → steps.** Our three jobs (`lint`, `test`, `db-smoke`) run in
    parallel on separate machines; steps in a job run in order.
 2. **`uses:`** pulls a reusable action, pinned by version: `actions/checkout@v5`
-   (get the code), `astral-sh/setup-uv@v6` (install uv, cache packages).
+   (get the code), `astral-sh/setup-uv@v7` (install uv, cache packages).
 3. **`run:`** is a shell command. We call `make` targets, so CI runs exactly what you run.
 4. **`uv sync --locked`** makes CI fail if `uv.lock` is stale.
 5. **`concurrency`** cancels an older run when you push again to the same branch.

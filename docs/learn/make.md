@@ -15,8 +15,10 @@ README. Nobody needs to remember `uv run pytest -m 'not integration'`.
    `*** missing separator`.
 4. **Each recipe line runs in its own shell**: `cd` on one line doesn't carry to the next.
 5. **`$$`** passes a literal `$` to the shell (`$$(uv --version)`); a single `$` is a make variable.
-6. **`-include .env` + `export`** loads `KEY=value` lines as make variables and exports them to
-   commands. The `-` means "fine if missing".
+6. **`include .env` + `export`** loads `KEY=value` lines as make variables and exports them to
+   commands. We wrap it in `ifneq (,$(wildcard .env))`: exporting a variable that was never
+   set exports an *empty string*, and since docker compose lets shell variables override
+   `.env`, a fresh clone's first `make db-up` failed in CI until this was fixed.
 7. **`@`** hides the command echo; **`$(MAKE) target`** calls another target (used by `db-up`).
 8. **Self-documenting help**: `## comment` after a target name is printed by `make help`.
 9. **`.SHELLFLAGS := -eu -o pipefail -c`**: stop on errors, unset variables and failed pipes.
