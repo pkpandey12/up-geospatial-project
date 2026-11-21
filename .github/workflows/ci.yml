@@ -1,0 +1,56 @@
+# CI: runs on every push and pull request. Learn: docs/learn/github-actions.md
+name: ci
+
+on:
+  push:
+  pull_request:
+
+# A newer push to the same branch cancels the older run.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+      - name: Install dependencies (exactly as locked)
+        run: uv sync --locked
+      - name: Lint, format check, profile validation
+        run: make lint
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+      - run: uv sync --locked
+      - name: Unit and notebook tests
+        run: make test
+
+  db-smoke:
+    # Same command Sage runs locally: start PostGIS with docker compose and smoke-test it.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+      - run: uv sync --locked
+      - name: Start PostGIS and run the smoke test
+        run: make db-up
+      - name: Show database logs on failure
+        if: failure()
+        run: docker compose logs db
+      - name: Stop the database
+        if: always()
+        run: docker compose down -v

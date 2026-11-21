@@ -1,0 +1,343 @@
+{
+  "$defs": {
+    "Buyer": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[a-z][a-z0-9_]*$",
+          "title": "Id",
+          "type": "string"
+        },
+        "description": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Description"
+        }
+      },
+      "required": [
+        "id"
+      ],
+      "title": "Buyer",
+      "type": "object"
+    },
+    "LandRule": {
+      "additionalProperties": false,
+      "description": "Partners' land rule: plot_acres = fixed_acres + acres_per_tpd x tpd.",
+      "properties": {
+        "fixed_acres": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Fixed Acres"
+        },
+        "acres_per_tpd": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Acres Per Tpd"
+        }
+      },
+      "required": [
+        "fixed_acres",
+        "acres_per_tpd"
+      ],
+      "title": "LandRule",
+      "type": "object"
+    },
+    "RawMaterial": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[a-z][a-z0-9_]*$",
+          "title": "Id",
+          "type": "string"
+        },
+        "description": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Description"
+        },
+        "tonnes_per_tonne_output": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Tonnes of this input per tonne of output.",
+          "title": "Tonnes Per Tonne Output"
+        },
+        "quality_factor": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "maximum": 1,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "0-1 adjustment for usable quality. Meaning still to be confirmed with the partners (see Decisions needed).",
+          "title": "Quality Factor"
+        }
+      },
+      "required": [
+        "id",
+        "tonnes_per_tonne_output",
+        "quality_factor"
+      ],
+      "title": "RawMaterial",
+      "type": "object"
+    },
+    "TpdRange": {
+      "additionalProperties": false,
+      "properties": {
+        "min": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Min"
+        },
+        "max": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Max"
+        }
+      },
+      "required": [
+        "min",
+        "max"
+      ],
+      "title": "TpdRange",
+      "type": "object"
+    },
+    "WaterQuality": {
+      "additionalProperties": false,
+      "properties": {
+        "grade": {
+          "anyOf": [
+            {
+              "enum": [
+                "any",
+                "raw",
+                "treated",
+                "potable"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Grade"
+        },
+        "max_tds_mg_per_l": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Maximum total dissolved solids.",
+          "title": "Max Tds Mg Per L"
+        },
+        "notes": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Notes"
+        }
+      },
+      "required": [
+        "grade",
+        "max_tds_mg_per_l"
+      ],
+      "title": "WaterQuality",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": 1,
+      "title": "Schema Version",
+      "type": "integer"
+    },
+    "product_id": {
+      "pattern": "^[a-z][a-z0-9_]*$",
+      "title": "Product Id",
+      "type": "string"
+    },
+    "product_name": {
+      "title": "Product Name",
+      "type": "string"
+    },
+    "raw_materials": {
+      "items": {
+        "$ref": "#/$defs/RawMaterial"
+      },
+      "minItems": 1,
+      "title": "Raw Materials",
+      "type": "array"
+    },
+    "kwh_per_tonne_output": {
+      "anyOf": [
+        {
+          "minimum": 0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Kwh Per Tonne Output"
+    },
+    "kl_water_per_tonne_output": {
+      "anyOf": [
+        {
+          "minimum": 0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Kl Water Per Tonne Output"
+    },
+    "water_quality": {
+      "$ref": "#/$defs/WaterQuality"
+    },
+    "buyers": {
+      "items": {
+        "$ref": "#/$defs/Buyer"
+      },
+      "title": "Buyers",
+      "type": "array"
+    },
+    "max_sourcing_distance_km": {
+      "anyOf": [
+        {
+          "exclusiveMinimum": 0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Max Sourcing Distance Km"
+    },
+    "land": {
+      "$ref": "#/$defs/LandRule"
+    },
+    "tpd_range": {
+      "$ref": "#/$defs/TpdRange"
+    },
+    "operating_days_per_year": {
+      "anyOf": [
+        {
+          "maximum": 366,
+          "minimum": 1,
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Operating Days Per Year"
+    },
+    "project_life_years": {
+      "anyOf": [
+        {
+          "maximum": 60,
+          "minimum": 1,
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Project Life Years"
+    },
+    "notes": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Notes"
+    }
+  },
+  "required": [
+    "schema_version",
+    "product_id",
+    "product_name",
+    "raw_materials",
+    "kwh_per_tonne_output",
+    "kl_water_per_tonne_output",
+    "water_quality",
+    "buyers",
+    "max_sourcing_distance_km",
+    "land",
+    "tpd_range",
+    "operating_days_per_year",
+    "project_life_years"
+  ],
+  "title": "ProductProfile",
+  "type": "object"
+}

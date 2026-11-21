@@ -1,0 +1,35 @@
+# Git hooks that run on `git commit`. Installed by `make setup`.
+# Run on everything by hand: uv run pre-commit run --all-files
+# Learn: docs/learn/ruff-and-pre-commit.md
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-toml
+      - id: check-merge-conflict
+      - id: check-added-large-files
+        args: ["--maxkb=1024"]   # data belongs in data/ (git-ignored), not in commits
+      - id: detect-private-key
+
+  # Ruff and the profile validator run from the project's own environment (uv.lock),
+  # so the hook, `make lint` and CI always use the same versions.
+  - repo: local
+    hooks:
+      - id: ruff-check
+        name: ruff check
+        entry: uv run --frozen ruff check --fix
+        language: system
+        types_or: [python, jupyter]
+      - id: ruff-format
+        name: ruff format
+        entry: uv run --frozen ruff format
+        language: system
+        types_or: [python, jupyter, markdown]   # ruff also formats ```python blocks in .md
+      - id: validate-profiles
+        name: validate product profiles
+        entry: uv run --frozen validate-profiles
+        language: system
+        files: ^config/product_profiles/.*\.ya?ml$

@@ -1,0 +1,37 @@
+# Local services. Phase 0 has only the database; Airflow joins in Phase 2.
+# Learn: docs/learn/docker.md and docs/learn/postgis.md
+name: up-siting
+
+services:
+  db:
+    # PostgreSQL 17 + PostGIS 3.6. Pinned to a major-minor tag so every machine gets the same
+    # database. See "Decisions needed" in docs/sessions/ for why 17 rather than 18.
+    image: postgis/postgis:17-3.6
+    container_name: up-siting-db
+    restart: unless-stopped
+    environment:
+      # Values come from .env (git-ignored). Compose fails fast if one is missing.
+      POSTGRES_USER: ${POSTGRES_USER:?set POSTGRES_USER in .env}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}
+      POSTGRES_DB: ${POSTGRES_DB:?set POSTGRES_DB in .env}
+    ports:
+      # Bound to 127.0.0.1 so the database is not exposed to your local network.
+      - "127.0.0.1:${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      # Named volume: data survives `docker compose down`; `make db-reset` deletes it.
+      - pgdata:/var/lib/postgresql/data
+      # Files in /docker-entrypoint-initdb.d/ run once, on first start with an empty volume.
+      # Mount single files: mounting the whole folder would hide the image's own 10_postgis.sh.
+      - ./db/init/20_project.sql:/docker-entrypoint-initdb.d/20_project.sql:ro
+      - ./db/smoke_test.sql:/opt/up-siting/smoke_test.sql:ro
+    healthcheck:
+      # -h 127.0.0.1 forces a TCP check. During first-time init the server listens only on a
+      # Unix socket, so a socket check would report "healthy" before init scripts finish.
+      test: ["CMD-SHELL", "pg_isready -h 127.0.0.1 -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+      start_period: 5s
+
+volumes:
+  pgdata:

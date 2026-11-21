@@ -1,0 +1,32 @@
+# --- secrets: never commit these (see .env.example)
+.env
+*.pem
+*.key
+
+# --- data: downloaded and derived files stay local (see data/README.md)
+data/*
+!data/README.md
+
+# --- Python / uv
+.venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.pytest_cache/
+.ruff_cache/
+
+# --- Jupyter
+.ipynb_checkpoints/
+
+# --- dbt (Phase 3) and Airflow (Phase 2)
+dbt/target/
+dbt/dbt_packages/
+dbt/logs/
+airflow/logs/
+
+# --- editors / OS
+.vscode/
+.idea/
+.DS_Store

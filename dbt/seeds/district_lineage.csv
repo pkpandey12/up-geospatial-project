@@ -1,0 +1,8 @@
+child_lgd_code,child_name,parent_lgd_code,parent_name,created_year,evidence,verified,note
+633,Kasganj,138,Etah,2008,lgd_census_codes,false,"No Census 2001 code; Census 2011 gives Etah 201 and Kasganj 202, both out of sequence"
+640,Amethi,185,Sultanpur,2010,lgd_census_codes,false,"Census 2011 code 000; formed from parts of Sultanpur and Rae Bareli"
+640,Amethi,175,Rae Bareli,2010,lgd_census_codes,false,"See row above"
+661,Hapur,145,Ghaziabad,2011,lgd_census_codes,false,"Census 2011 code 000"
+660,Shamli,172,Muzaffarnagar,2011,lgd_census_codes,false,"Census 2011 code 000"
+659,Sambhal,171,Moradabad,2011,lgd_census_codes,false,"Census 2011 code 000"
+659,Sambhal,133,Budaun,2011,general_knowledge,false,"Gunnaur tehsil believed to come from Budaun: check LGD View History"

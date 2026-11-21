@@ -1,0 +1,58 @@
+# yaml-language-server: $schema=./profile.schema.json
+# Product profile: Compressed Biogas (CBG). EXAMPLE profile; pilot products not chosen yet.
+# Schema: src/up_siting/profiles/schema.py. Check with: make profiles
+# Rule: every key stays; unknown values are `null  # TODO: partner`.
+# TPD = tonnes of CBG OUTPUT per day (confirmed by the partners, 22 Nov 2026).
+
+schema_version: 1
+product_id: cbg
+product_name: Compressed Biogas (CBG)
+
+raw_materials:
+  # Candidate feedstocks for UP; the partners confirm which apply and the ratios.
+  - id: press_mud
+    description: Sugar-mill filter cake (UP's sugarcane belt)
+    tonnes_per_tonne_output: null  # TODO: partner
+    quality_factor: null  # TODO: partner
+  - id: paddy_straw
+    description: Rice straw (crop residue)
+    tonnes_per_tonne_output: null  # TODO: partner
+    quality_factor: null  # TODO: partner
+  - id: cattle_dung
+    description: Cattle dung
+    tonnes_per_tonne_output: null  # TODO: partner
+    quality_factor: null  # TODO: partner
+
+kwh_per_tonne_output: null  # TODO: partner
+kl_water_per_tonne_output: null  # TODO: partner
+
+water_quality:
+  grade: null  # TODO: partner (any | raw | treated | potable)
+  max_tds_mg_per_l: null  # TODO: partner
+  notes: null
+
+buyers:
+  # Candidate buyer types; the partners confirm.
+  - id: omc_satat
+    description: Oil marketing companies under the SATAT offtake scheme
+  - id: cgd_network
+    description: City gas distribution operators
+  - id: fom_buyers
+    description: Fermented organic manure (by-product) buyers
+
+max_sourcing_distance_km: null  # TODO: partner
+
+land:
+  # plot_acres = fixed_acres + acres_per_tpd x tpd
+  fixed_acres: 2
+  acres_per_tpd: 1
+
+tpd_range:
+  min: null  # TODO: partner
+  max: null  # TODO: partner
+
+operating_days_per_year: null  # TODO: partner
+project_life_years: null  # TODO: partner
+
+notes: >-
+  Example profile from the brief (v2.1). Only the land rule comes from the partners so far.

@@ -1,0 +1,72 @@
+[project]
+name = "up-siting"
+version = "0.1.0"
+description = "Ranks Uttar Pradesh's 75 districts by estimated variable overhead (INR per tonne) for siting a factory."
+readme = "README.md"
+requires-python = ">=3.12,<3.14"
+dependencies = [
+    # EDA engine (decided): DuckDB over files, pandas for frames, Arrow/Parquet as the interchange format.
+    "duckdb>=2.0",
+    "pandas>=3.0",
+    "pyarrow>=20",
+    # Geospatial EDA (decided). Used from EDA step 3 onwards.
+    "geopandas>=1.1",
+    # PDF tables (decided). Used when the PDF-table extractor pattern arrives (circle rates).
+    "pdfplumber>=0.11",
+    # Product profiles: schema + validation (see docs/learn/pydantic.md).
+    "pydantic>=2.10",
+    "pyyaml>=6.0",
+    # Postgres driver: Phase 0 smoke test now, raw loaders in Phase 2.
+    "psycopg[binary]>=3.2",
+]
+
+[dependency-groups]
+dev = [
+    "ruff>=0.15",
+    "pytest>=9.0",
+    "pre-commit>=4.0",
+    "jupyterlab>=4.4",
+    "ipykernel>=7.0",
+    "nbclient>=0.10",
+    "nbformat>=5.10",
+]
+
+[project.scripts]
+validate-profiles = "up_siting.profiles.validate:main"
+
+[build-system]
+requires = ["hatchling>=1.27"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/up_siting"]
+
+# ---------------------------------------------------------------- ruff
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+extend-exclude = ["data", "airflow/logs", "dbt/target", "dbt/dbt_packages"]
+
+[tool.ruff.lint]
+# E/W pycodestyle, F pyflakes, I isort, B bugbear, UP pyupgrade, SIM simplify, RUF ruff-specific.
+select = ["E", "W", "F", "I", "B", "UP", "SIM", "RUF"]
+# RUF001-003 flag "ambiguous" unicode such as the rupee sign and Devanagari, which this project uses on purpose.
+ignore = ["RUF001", "RUF002", "RUF003"]
+
+[tool.ruff.lint.per-file-ignores]
+# Notebooks: imports sit in the first code cell, and section cells reuse names on purpose.
+"*.ipynb" = ["E402", "F811", "E501"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["up_siting"]
+
+# ---------------------------------------------------------------- pytest
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+# Integration tests need the PostGIS container, so `make test` skips them; `make db-up` runs them.
+addopts = "-rfE --strict-markers -m 'not integration'"
+markers = [
+    "integration: needs the PostGIS container running (make db-up)",
+    "notebook: executes a notebook end to end against fixtures",
+    "todo: checks a function Sage implements; xfails while it raises NotImplementedError",
+]

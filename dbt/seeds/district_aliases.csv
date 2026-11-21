@@ -1,0 +1,33 @@
+lgd_district_code,lgd_district_name,alias,alias_type,evidence,note
+120,Prayagraj,Allahabad,former_name,lgd_short_name,"Renamed 2018; LGD short name is still ALB"
+140,Ayodhya,Faizabad,former_name,lgd_short_name,"Renamed 2018; LGD short name is still FZB"
+179,Bhadohi,Sant Ravidas Nagar,former_name,lgd_short_name,"LGD short name SRD; Census 2011 calls it Sant Ravidas Nagar (Bhadohi)"
+179,Bhadohi,Sant Ravidas Nagar (Bhadohi),alternate_name,general_knowledge,"Census 2011 form"
+154,Amroha,Jyotiba Phule Nagar,former_name,general_knowledge,"Renamed 2012"
+154,Amroha,J.P. Nagar,alternate_name,general_knowledge,"Abbreviation of Jyotiba Phule Nagar"
+163,Hathras,Mahamaya Nagar,former_name,general_knowledge,"Renamed 2012"
+633,Kasganj,Kanshiram Nagar,former_name,general_knowledge,"Created 2008 as Kanshiram Nagar; renamed 2012"
+661,Hapur,Panchsheel Nagar,former_name,general_knowledge,"Created 2011 as Panchsheel Nagar; renamed 2012"
+660,Shamli,Prabuddh Nagar,former_name,general_knowledge,"Created 2011 as Prabuddh Nagar; renamed 2012"
+660,Shamli,Prabudh Nagar,spelling_variant,general_knowledge,
+659,Sambhal,Bhim Nagar,former_name,general_knowledge,"Created 2011 as Bhim Nagar; renamed 2012"
+640,Amethi,Chhatrapati Shahuji Maharaj Nagar,former_name,general_knowledge,"Created 2010 under this name; renamed 2012"
+640,Amethi,CSM Nagar,alternate_name,general_knowledge,"Abbreviation"
+156,Kanpur Dehat,Ramabai Nagar,former_name,general_knowledge,"Name used 2010-2012"
+159,Kheri,Lakhimpur Kheri,alternate_name,general_knowledge,"Common name; HQ is Lakhimpur"
+159,Kheri,Lakhimpur,alternate_name,general_knowledge,"Unambiguous within UP"
+160,Kushinagar,Padrauna,former_name,general_knowledge,"Older name, after the HQ town"
+164,Mahrajganj,Maharajganj,spelling_variant,general_knowledge,
+164,Mahrajganj,Maharajgunj,spelling_variant,general_knowledge,
+181,Shrawasti,Shravasti,spelling_variant,general_knowledge,
+175,Rae Bareli,Rai Bareli,spelling_variant,general_knowledge,
+133,Budaun,Badaun,spelling_variant,general_knowledge,
+134,Bulandshahr,Bulandshahar,spelling_variant,general_knowledge,
+143,Firozabad,Ferozabad,spelling_variant,general_knowledge,
+146,Ghazipur,Gazipur,spelling_variant,general_knowledge,
+184,Sonbhadra,Sonebhadra,spelling_variant,general_knowledge,
+124,Baghpat,Bagpat,spelling_variant,general_knowledge,
+178,Sant Kabir Nagar,Sant Kabeer Nagar,spelling_variant,general_knowledge,
+144,Gautam Buddha Nagar,Gautam Budh Nagar,spelling_variant,general_knowledge,
+144,Gautam Buddha Nagar,G.B. Nagar,alternate_name,general_knowledge,"Abbreviation"
+168,Mau,Maunath Bhanjan,alternate_name,general_knowledge,"Name of the HQ town"

@@ -1,0 +1,108 @@
+alias_normalised,lgd_district_code,alias,alias_type
+agra,118,Agra,lgd_official
+aligarh,119,Aligarh,lgd_official
+allahabad,120,Allahabad,former_name
+prayagraj,120,Prayagraj,lgd_official
+ambedkarnagar,121,Ambedkar Nagar,lgd_official
+auraiya,122,Auraiya,lgd_official
+azamgarh,123,Azamgarh,lgd_official
+baghpat,124,Baghpat,lgd_official
+bagpat,124,Bagpat,spelling_variant
+bahraich,125,Bahraich,lgd_official
+ballia,126,Ballia,lgd_official
+balrampur,127,Balrampur,lgd_official
+banda,128,Banda,lgd_official
+barabanki,129,Bara Banki,lgd_official
+bareilly,130,Bareilly,lgd_official
+basti,131,Basti,lgd_official
+bijnor,132,Bijnor,lgd_official
+budaun,133,Budaun,lgd_official
+badaun,133,Badaun,spelling_variant
+bulandshahr,134,Bulandshahr,lgd_official
+bulandshahar,134,Bulandshahar,spelling_variant
+chandauli,135,Chandauli,lgd_official
+chitrakoot,136,Chitrakoot,lgd_official
+deoria,137,Deoria,lgd_official
+etah,138,Etah,lgd_official
+etawah,139,Etawah,lgd_official
+faizabad,140,Faizabad,former_name
+ayodhya,140,Ayodhya,lgd_official
+farrukhabad,141,Farrukhabad,lgd_official
+fatehpur,142,Fatehpur,lgd_official
+firozabad,143,Firozabad,lgd_official
+ferozabad,143,Ferozabad,spelling_variant
+gbnagar,144,G.B. Nagar,alternate_name
+gautambuddhanagar,144,Gautam Buddha Nagar,lgd_official
+gautambudhnagar,144,Gautam Budh Nagar,spelling_variant
+ghaziabad,145,Ghaziabad,lgd_official
+ghazipur,146,Ghazipur,lgd_official
+gazipur,146,Gazipur,spelling_variant
+gonda,147,Gonda,lgd_official
+gorakhpur,148,Gorakhpur,lgd_official
+hamirpur,149,Hamirpur,lgd_official
+hardoi,150,Hardoi,lgd_official
+jalaun,151,Jalaun,lgd_official
+jaunpur,152,Jaunpur,lgd_official
+jhansi,153,Jhansi,lgd_official
+jpnagar,154,J.P. Nagar,alternate_name
+jyotibaphulenagar,154,Jyotiba Phule Nagar,former_name
+amroha,154,Amroha,lgd_official
+kannauj,155,Kannauj,lgd_official
+ramabainagar,156,Ramabai Nagar,former_name
+kanpurdehat,156,Kanpur Dehat,lgd_official
+kanpurnagar,157,Kanpur Nagar,lgd_official
+kaushambi,158,Kaushambi,lgd_official
+lakhimpur,159,Lakhimpur,alternate_name
+lakhimpurkheri,159,Lakhimpur Kheri,alternate_name
+kheri,159,Kheri,lgd_official
+padrauna,160,Padrauna,former_name
+kushinagar,160,Kushinagar,lgd_official
+lalitpur,161,Lalitpur,lgd_official
+lucknow,162,Lucknow,lgd_official
+mahamayanagar,163,Mahamaya Nagar,former_name
+hathras,163,Hathras,lgd_official
+mahrajganj,164,Mahrajganj,lgd_official
+maharajganj,164,Maharajganj,spelling_variant
+maharajgunj,164,Maharajgunj,spelling_variant
+mahoba,165,Mahoba,lgd_official
+mainpuri,166,Mainpuri,lgd_official
+mathura,167,Mathura,lgd_official
+maunathbhanjan,168,Maunath Bhanjan,alternate_name
+mau,168,Mau,lgd_official
+meerut,169,Meerut,lgd_official
+mirzapur,170,Mirzapur,lgd_official
+moradabad,171,Moradabad,lgd_official
+muzaffarnagar,172,Muzaffarnagar,lgd_official
+pilibhit,173,Pilibhit,lgd_official
+pratapgarh,174,Pratapgarh,lgd_official
+raebareli,175,Rae Bareli,lgd_official
+raibareli,175,Rai Bareli,spelling_variant
+rampur,176,Rampur,lgd_official
+saharanpur,177,Saharanpur,lgd_official
+santkabirnagar,178,Sant Kabir Nagar,lgd_official
+santkabeernagar,178,Sant Kabeer Nagar,spelling_variant
+santravidasnagarbhadohi,179,Sant Ravidas Nagar (Bhadohi),alternate_name
+santravidasnagar,179,Sant Ravidas Nagar,former_name
+bhadohi,179,Bhadohi,lgd_official
+shahjahanpur,180,Shahjahanpur,lgd_official
+shrawasti,181,Shrawasti,lgd_official
+shravasti,181,Shravasti,spelling_variant
+siddharthnagar,182,Siddharthnagar,lgd_official
+sitapur,183,Sitapur,lgd_official
+sonbhadra,184,Sonbhadra,lgd_official
+sonebhadra,184,Sonebhadra,spelling_variant
+sultanpur,185,Sultanpur,lgd_official
+unnao,186,Unnao,lgd_official
+varanasi,187,Varanasi,lgd_official
+kanshiramnagar,633,Kanshiram Nagar,former_name
+kasganj,633,Kasganj,lgd_official
+csmnagar,640,CSM Nagar,alternate_name
+chhatrapatishahujimaharajnagar,640,Chhatrapati Shahuji Maharaj Nagar,former_name
+amethi,640,Amethi,lgd_official
+bhimnagar,659,Bhim Nagar,former_name
+sambhal,659,Sambhal,lgd_official
+prabuddhnagar,660,Prabuddh Nagar,former_name
+shamli,660,Shamli,lgd_official
+prabudhnagar,660,Prabudh Nagar,spelling_variant
+panchsheelnagar,661,Panchsheel Nagar,former_name
+hapur,661,Hapur,lgd_official

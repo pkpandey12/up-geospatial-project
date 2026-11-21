@@ -1,0 +1,76 @@
+lgd_district_code,district_name,district_name_normalised,lgd_state_code,short_name,census_2001_code,census_2011_code,in_census_2001,in_census_2011,_source_file,_ingest_date
+118,Agra,agra,9,AGR,15,146,True,True,Districts_of_Uttar_Pradesh_State.pdf,2026-11-21
+119,Aligarh,aligarh,9,ALG,12,143,True,True,Districts_of_Uttar_Pradesh_State.pdf,2026-11-21
+120,Prayagraj,prayagraj,9,ALB,45,175,True,True,Districts_of_Uttar_Pradesh_State.pdf,2026-11-21
+121,Ambedkar Nagar,ambedkarnagar,9,AMN,48,178,True,True,Districts_of_Uttar_Pradesh_State.pdf,2026-11-21
+122,Auraiya,auraiya,9,ARY,32,162,True,True,Districts_of_Uttar_Pradesh_State.pdf,2026-11-21
+123,Azamgarh,azamgarh,9,AZM,61,191,True,True,Districts_of_Uttar_Pradesh_State.pdf,2026-11-21
+124,Baghpat,baghpat,9,BGP,08,139,True,True,Districts_of_Uttar_Pradesh_State.pdf,2026-11-21
+125,Bahraich,bahraich,9,BHR,50,180,True,True,Districts_of_Uttar_Pradesh_State.pdf,2026-11-21
+126,Ballia,ballia,9,BAL,63,193,True,True,Districts_of_Uttar_Pradesh_State.pdf,2026-11-21
+127,Balrampur,balrampur,9,BRP,52,182,True,True,Districts_of_Uttar_Pradesh_State.pdf,2026-11-21
+128,Banda,banda,9,BAN,40,170,True,True,Districts_of_Uttar_Pradesh_State.pdf,2026-11-21
+129,Bara Banki,barabanki,9,BRB,46,176,True,True,Districts_of_Uttar_Pradesh_State.pdf,2026-11-21
+130,Bareilly,bareilly,9,BRL,20,150,True,True,Districts_of_Uttar_Pradesh_State.pdf,2026-11-21
+131,Basti,basti,9,BST,55,185,True,True,Districts_of_Uttar_Pradesh_State.pdf,2026-11-21
+132,Bijnor,bijnor,9,BJN,03,134,True,True,Districts_of_Uttar_Pradesh_State.pdf,2026-11-21
+133,Budaun,budaun,9,BDN,19,149,True,True,Districts_of_Uttar_Pradesh_State.pdf,2026-11-21
+134,Bulandshahr,bulandshahr,9,BLR,11,142,True,True,Districts_of_Uttar_Pradesh_State.pdf,2026-11-21
+135,Chandauli,chandauli,9,CHN,66,196,True,True,Districts_of_Uttar_Pradesh_State.pdf,2026-11-21
+136,Chitrakoot,chitrakoot,9,CHK,41,171,True,True,Districts_of_Uttar_Pradesh_State.pdf,2026-11-21
+137,Deoria,deoria,9,DER,60,190,True,True,Districts_of_Uttar_Pradesh_State.pdf,2026-11-21
+138,Etah,etah,9,ETA,17,201,True,True,Districts_of_Uttar_Pradesh_State.pdf,2026-11-21
+139,Etawah,etawah,9,ETW,31,161,True,True,Districts_of_Uttar_Pradesh_State.pdf,2026-11-21
+140,Ayodhya,ayodhya,9,FZB,47,177,True,True,Districts_of_Uttar_Pradesh_State.pdf,2026-11-21
+141,Farrukhabad,farrukhabad,9,FKB,29,159,True,True,Districts_of_Uttar_Pradesh_State.pdf,2026-11-21
+142,Fatehpur,fatehpur,9,FTP,42,172,True,True,Districts_of_Uttar_Pradesh_State.pdf,2026-11-21
+143,Firozabad,firozabad,9,FIR,16,147,True,True,Districts_of_Uttar_Pradesh_State.pdf,2026-11-21
+144,Gautam Buddha Nagar,gautambuddhanagar,9,GBN,10,141,True,True,Districts_of_Uttar_Pradesh_State.pdf,2026-11-21
+145,Ghaziabad,ghaziabad,9,GZB,09,140,True,True,Districts_of_Uttar_Pradesh_State.pdf,2026-11-21
+146,Ghazipur,ghazipur,9,GZP,65,195,True,True,Districts_of_Uttar_Pradesh_State.pdf,2026-11-21
+147,Gonda,gonda,9,GND,53,183,True,True,Districts_of_Uttar_Pradesh_State.pdf,2026-11-21
+148,Gorakhpur,gorakhpur,9,GKP,58,188,True,True,Districts_of_Uttar_Pradesh_State.pdf,2026-11-21
+149,Hamirpur,hamirpur,9,HRP,38,168,True,True,Districts_of_Uttar_Pradesh_State.pdf,2026-11-21
+150,Hardoi,hardoi,9,HAR,25,155,True,True,Districts_of_Uttar_Pradesh_State.pdf,2026-11-21
+151,Jalaun,jalaun,9,JLU,35,165,True,True,Districts_of_Uttar_Pradesh_State.pdf,2026-11-21
+152,Jaunpur,jaunpur,9,JNP,64,194,True,True,Districts_of_Uttar_Pradesh_State.pdf,2026-11-21
+153,Jhansi,jhansi,9,JHS,36,166,True,True,Districts_of_Uttar_Pradesh_State.pdf,2026-11-21
+154,Amroha,amroha,9,AMR,06,137,True,True,Districts_of_Uttar_Pradesh_State.pdf,2026-11-21
+155,Kannauj,kannauj,9,KNJ,30,160,True,True,Districts_of_Uttar_Pradesh_State.pdf,2026-11-21
+156,Kanpur Dehat,kanpurdehat,9,KPD,33,163,True,True,Districts_of_Uttar_Pradesh_State.pdf,2026-11-21
+157,Kanpur Nagar,kanpurnagar,9,KPN,34,164,True,True,Districts_of_Uttar_Pradesh_State.pdf,2026-11-21
+158,Kaushambi,kaushambi,9,KSB,44,174,True,True,Districts_of_Uttar_Pradesh_State.pdf,2026-11-21
+159,Kheri,kheri,9,KHR,23,153,True,True,Districts_of_Uttar_Pradesh_State.pdf,2026-11-21
+160,Kushinagar,kushinagar,9,KSN,59,189,True,True,Districts_of_Uttar_Pradesh_State.pdf,2026-11-21
+161,Lalitpur,lalitpur,9,LLP,37,167,True,True,Districts_of_Uttar_Pradesh_State.pdf,2026-11-21
+162,Lucknow,lucknow,9,LCK,27,157,True,True,Districts_of_Uttar_Pradesh_State.pdf,2026-11-21
+163,Hathras,hathras,9,HTR,13,144,True,True,Districts_of_Uttar_Pradesh_State.pdf,2026-11-21
+164,Mahrajganj,mahrajganj,9,MRG,57,187,True,True,Districts_of_Uttar_Pradesh_State.pdf,2026-11-21
+165,Mahoba,mahoba,9,MHB,39,169,True,True,Districts_of_Uttar_Pradesh_State.pdf,2026-11-21
+166,Mainpuri,mainpuri,9,MPR,18,148,True,True,Districts_of_Uttar_Pradesh_State.pdf,2026-11-21
+167,Mathura,mathura,9,MTH,14,145,True,True,Districts_of_Uttar_Pradesh_State.pdf,2026-11-21
+168,Mau,mau,9,MAU,62,192,True,True,Districts_of_Uttar_Pradesh_State.pdf,2026-11-21
+169,Meerut,meerut,9,MRT,07,138,True,True,Districts_of_Uttar_Pradesh_State.pdf,2026-11-21
+170,Mirzapur,mirzapur,9,MZP,69,199,True,True,Districts_of_Uttar_Pradesh_State.pdf,2026-11-21
+171,Moradabad,moradabad,9,MRB,04,135,True,True,Districts_of_Uttar_Pradesh_State.pdf,2026-11-21
+172,Muzaffarnagar,muzaffarnagar,9,MZN,02,133,True,True,Districts_of_Uttar_Pradesh_State.pdf,2026-11-21
+173,Pilibhit,pilibhit,9,PLB,21,151,True,True,Districts_of_Uttar_Pradesh_State.pdf,2026-11-21
+174,Pratapgarh,pratapgarh,9,PRG,43,173,True,True,Districts_of_Uttar_Pradesh_State.pdf,2026-11-21
+175,Rae Bareli,raebareli,9,RBL,28,158,True,True,Districts_of_Uttar_Pradesh_State.pdf,2026-11-21
+176,Rampur,rampur,9,RMP,05,136,True,True,Districts_of_Uttar_Pradesh_State.pdf,2026-11-21
+177,Saharanpur,saharanpur,9,SHR,01,132,True,True,Districts_of_Uttar_Pradesh_State.pdf,2026-11-21
+178,Sant Kabir Nagar,santkabirnagar,9,SKN,56,186,True,True,Districts_of_Uttar_Pradesh_State.pdf,2026-11-21
+179,Bhadohi,bhadohi,9,SRD,68,198,True,True,Districts_of_Uttar_Pradesh_State.pdf,2026-11-21
+180,Shahjahanpur,shahjahanpur,9,SJN,22,152,True,True,Districts_of_Uttar_Pradesh_State.pdf,2026-11-21
+181,Shrawasti,shrawasti,9,SHV,51,181,True,True,Districts_of_Uttar_Pradesh_State.pdf,2026-11-21
+182,Siddharthnagar,siddharthnagar,9,SDN,54,184,True,True,Districts_of_Uttar_Pradesh_State.pdf,2026-11-21
+183,Sitapur,sitapur,9,STP,24,154,True,True,Districts_of_Uttar_Pradesh_State.pdf,2026-11-21
+184,Sonbhadra,sonbhadra,9,SBD,70,200,True,True,Districts_of_Uttar_Pradesh_State.pdf,2026-11-21
+185,Sultanpur,sultanpur,9,SLP,49,179,True,True,Districts_of_Uttar_Pradesh_State.pdf,2026-11-21
+186,Unnao,unnao,9,UNO,26,156,True,True,Districts_of_Uttar_Pradesh_State.pdf,2026-11-21
+187,Varanasi,varanasi,9,VRN,67,197,True,True,Districts_of_Uttar_Pradesh_State.pdf,2026-11-21
+633,Kasganj,kasganj,9,KAS,,202,False,True,Districts_of_Uttar_Pradesh_State.pdf,2026-11-21
+640,Amethi,amethi,9,AME,,,False,False,Districts_of_Uttar_Pradesh_State.pdf,2026-11-21
+659,Sambhal,sambhal,9,SBL,,,False,False,Districts_of_Uttar_Pradesh_State.pdf,2026-11-21
+660,Shamli,shamli,9,SML,,,False,False,Districts_of_Uttar_Pradesh_State.pdf,2026-11-21
+661,Hapur,hapur,9,HAP,,,False,False,Districts_of_Uttar_Pradesh_State.pdf,2026-11-21
