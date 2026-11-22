@@ -105,7 +105,14 @@ uv downloads Python 3.12 itself; you don't need to install Python.
 
 ## 3. Troubleshooting
 
-- **Port 5432 already in use** (a local Postgres): stop it, or set `POSTGRES_PORT=5433` in `.env`.
+- **`port 5432 already in use` / `address already in use`**: something on your machine already
+  listens on Postgres's port (Homebrew/Postgres.app/apt Postgres, or another container).
+  - *Dev Container*: fixed since 2026-11-22: the container no longer publishes 5432 on your
+    machine. Pull the latest branch, then *Dev Containers: Rebuild Container*. For a GUI tool on
+    your host, use the port VS Code shows in its **Ports** tab for `db:5432`.
+  - *Host path*: set `POSTGRES_PORT=5433` in `.env` (then `make db-up`), or stop the other one.
+  - See who holds the port: macOS `lsof -nP -iTCP:5432 -sTCP:LISTEN`; Linux
+    `sudo ss -ltnp 'sport = :5432'`; Docker `docker ps --filter publish=5432`.
 - **`permission denied ... docker.sock`** on Linux: you skipped `usermod -aG docker` or didn't log out/in.
 - **Scripts fail with `$'\r': command not found`** (Windows): the repo was cloned with CRLF endings.
   `.gitattributes` prevents this for new clones; re-clone inside WSL.

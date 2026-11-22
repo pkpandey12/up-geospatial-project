@@ -17,8 +17,9 @@
   // Runs once after the container is created: .env, Python packages, git hooks.
   "postCreateCommand": "make setup",
 
-  // JupyterLab (`make lab`).
-  "forwardPorts": [8888],
+  // JupyterLab (`make lab`), and the database for GUI tools on your host (DBeaver, pgAdmin…).
+  // If 5432 is taken on your machine, VS Code picks another local port (see the Ports tab).
+  "forwardPorts": [8888, "db:5432"],
 
   "customizations": {
     "vscode": {

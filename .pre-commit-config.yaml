@@ -8,6 +8,8 @@ repos:
       - id: trailing-whitespace
       - id: end-of-file-fixer
       - id: check-yaml
+        # Syntax-only: allows docker compose's custom tags such as `!reset` (.devcontainer/compose.yaml).
+        args: ["--unsafe"]
       - id: check-toml
       - id: check-merge-conflict
       - id: check-added-large-files

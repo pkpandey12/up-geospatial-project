@@ -36,14 +36,18 @@ docker-compose.yml           db   (PostGIS; also used on the host path)
    compose builds through "bake", which blocks the temporary Dockerfile the Dev Container tooling
    writes to `/tmp`.) `postCreateCommand: make setup` runs once per new container.
    (There are also `onCreate`, `postStart`, `postAttach`.)
-6. **Mode switch.** The image sets `UP_SITING_DEVCONTAINER=1`; the Makefile uses it to talk to
+6. **No host port for the database.** `.devcontainer/compose.yaml` removes `db`'s published
+   port (`ports: !reset []`): the dev container reaches it as `db:5432` on the compose network,
+   so a Postgres already on your machine can't block startup. `forwardPorts: ["db:5432"]` lets
+   VS Code expose it on a free local port for GUI tools.
+7. **Mode switch.** The image sets `UP_SITING_DEVCONTAINER=1`; the Makefile uses it to talk to
    `db` over the network and to refuse host-only targets (`db-down`, …).
-7. **UID mapping.** On Linux the CLI remaps the container user's UID to yours, so files you
+8. **UID mapping.** On Linux the CLI remaps the container user's UID to yours, so files you
    create in the container aren't owned by someone else on the host.
-8. **Git hooks across both worlds.** `pre-commit install` writes a hook with one absolute Python
+9. **Git hooks across both worlds.** `pre-commit install` writes a hook with one absolute Python
    path, which breaks commits made from the other side. We use `git config core.hooksPath
    .githooks` with a script that runs `uv run pre-commit run`, which works on both.
-9. **Multi-arch images** (amd64 + arm64) avoid emulation on Apple Silicon. Check with
+10. **Multi-arch images** (amd64 + arm64) avoid emulation on Apple Silicon. Check with
    `docker manifest inspect <image>`.
 
 ## Commands you'll run
@@ -60,6 +64,8 @@ devcontainer exec --workspace-folder . make test
 - Editing the Dockerfile and not choosing *Rebuild Container*.
 - Cloning to `C:\` on Windows: slow file access and CRLF line endings. Clone inside WSL.
 - Using `localhost` for the database from inside the container (it's `db`).
+- Publishing a fixed host port for a service only containers need: it collides with whatever
+  the developer already runs (this repo's first Dev Container did, with a local Postgres).
 - Putting secrets in `devcontainer.json`: it's committed. Use `.env` (git-ignored).
 
 ## Interview questions

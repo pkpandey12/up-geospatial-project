@@ -21,6 +21,12 @@
   sandbox can't reach Debian mirrors); inside it `make setup`, `test`, `lint`, `db-up` passed,
   `db-down` correctly refused; shared hook works on host incl. unstaged-change stash/restore.
 
+### Fix after first use (Sage's machine)
+- Opening the Dev Container failed with `port 5432 already in use`: a Postgres was already
+  listening on the host. The Dev Container no longer publishes `db` on the host
+  (`ports: !reset []`); VS Code forwards `db:5432` to a free local port instead. Reproduced
+  with port 5432 occupied; the container now starts and `make db-up` passes.
+
 ### Decisions made (by Sage)
 - Dev environment: **host + Dev Container** (both supported, same commands).
 - PostGIS image: **`imresamu/postgis:17-3.6`** (resolves decision 2's image question; the version

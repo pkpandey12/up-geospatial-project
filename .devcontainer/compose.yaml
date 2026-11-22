@@ -2,6 +2,13 @@
 # NOTE: with several compose files, relative paths resolve from the FIRST file's folder,
 # i.e. the repo root, not from .devcontainer/.
 services:
+  db:
+    # In the Dev Container the database is only reached over the compose network (db:5432),
+    # so don't publish it on the host. That way a Postgres already running on your machine
+    # (Homebrew, Postgres.app, apt, another container) can't block startup with
+    # "port 5432 already in use". VS Code forwards it for host tools instead (forwardPorts).
+    ports: !reset []
+
   dev:
     # Built by devcontainer.json's initializeCommand (a plain `docker build`), not by compose:
     # newer compose builds via "bake", which refuses the temporary Dockerfile the Dev Container
