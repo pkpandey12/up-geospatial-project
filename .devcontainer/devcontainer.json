@@ -10,6 +10,10 @@
   "shutdownAction": "stopCompose",
   "remoteUser": "vscode",
 
+  // Runs on the HOST before the containers start: build the dev image (cached after the first
+  // time). No shell syntax, so it works from cmd, PowerShell, bash and zsh alike.
+  "initializeCommand": "docker build -t up-siting-dev:local -f .devcontainer/Dockerfile .devcontainer",
+
   // Runs once after the container is created: .env, Python packages, git hooks.
   "postCreateCommand": "make setup",
 

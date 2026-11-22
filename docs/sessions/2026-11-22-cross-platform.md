@@ -1,7 +1,7 @@
 ## Session report: 2026-11-22, Phase 0 follow-up (cross-platform)
 
 ### Built
-- **Dev Container** (`.devcontainer/`): Debian 13 + Python 3.12 + uv 0.13.9 + psql 17, multi-arch;
+- **Dev Container** (`.devcontainer/`, image prebuilt by `initializeCommand` to avoid a compose-bake incompatibility): Debian 13 + Python 3.12 + uv 0.13.9 + psql 17, multi-arch;
   compose service `dev` layered on `docker-compose.yml`; `postCreateCommand: make setup`; VS Code
   extensions (Python, Jupyter, Ruff, YAML, TOML). Virtualenv kept outside the repo so host and
   container never share binaries.

@@ -3,9 +3,11 @@
 # i.e. the repo root, not from .devcontainer/.
 services:
   dev:
-    build:
-      context: .
-      dockerfile: .devcontainer/Dockerfile
+    # Built by devcontainer.json's initializeCommand (a plain `docker build`), not by compose:
+    # newer compose builds via "bake", which refuses the temporary Dockerfile the Dev Container
+    # tooling generates in /tmp. A prebuilt image sidesteps that on every OS.
+    image: up-siting-dev:local
+    pull_policy: never               # local image only; never look for it on Docker Hub
     command: sleep infinity          # stay up; the editor attaches to it
     volumes:
       - .:/workspaces/up-geospatial-project:cached
