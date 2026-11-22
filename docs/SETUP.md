@@ -49,6 +49,9 @@ natively on Apple Silicon and on Intel/AMD.
 
 ## 2A. Dev Container path
 
+*Pick **either** 2A **or** 2B. With 2A you skip 2B entirely: everything below runs inside the
+container, and `make setup` runs there automatically.*
+
 1. Install [VS Code](https://code.visualstudio.com/) and its **Dev Containers** extension
    (`ms-vscode-remote.remote-containers`). Cursor has it built in; JetBrains IDEs: *Remote
    Development → Dev Containers*.
@@ -75,6 +78,10 @@ natively on Apple Silicon and on Intel/AMD.
 ---
 
 ## 2B. Host path
+
+*Everything here runs directly in your machine's terminal, not in a container. Docker (step 1)
+must work in that same terminal, because `make db-up` uses it to start PostGIS. `make setup`
+only warns if Docker is missing, so tests, lint and notebooks work in the meantime.*
 
 Install **git, make and uv** (Docker from step 1):
 

@@ -37,7 +37,7 @@ export POSTGRES_USER POSTGRES_PASSWORD POSTGRES_DB POSTGRES_PORT POSTGRES_HOST
 UV      := uv
 COMPOSE := docker compose
 
-.PHONY: help check-tools env hooks setup lint format test todo ci profiles \
+.PHONY: help check-tools check-docker env hooks setup lint format test todo ci profiles \
         db-up db-wait db-smoke db-down db-reset db-psql db-logs lab clean host-only
 
 help: ## List the targets
@@ -45,16 +45,29 @@ help: ## List the targets
 	  | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-12s\033[0m %s\n", $$1, $$2}'
 
 # ---------------------------------------------------------------- setup
-check-tools: ## Check that the tools this project needs are installed
-	@command -v uv >/dev/null || { echo "uv not found: see docs/SETUP.md"; exit 1; }
+check-tools: ## Check the tools: uv is required; Docker only for the db-* targets
+	@command -v uv >/dev/null || { echo "uv not found: see docs/SETUP.md, step 2B"; exit 1; }
 ifdef UP_SITING_DEVCONTAINER
 	@echo "tools ok (Dev Container): $$(uv --version) | $$(psql --version)"
 else
-	@command -v docker >/dev/null || { echo "docker not found: see docs/SETUP.md"; exit 1; }
-	@docker compose version >/dev/null 2>&1 \
-	  || { echo "docker compose v2 not found: see docs/SETUP.md"; exit 1; }
-	@echo "tools ok: $$(uv --version) | $$(docker --version) | $$(git --version)"
+	@echo "uv ok: $$(uv --version)"
+	@$(MAKE) --no-print-directory check-docker 2>/dev/null \
+	  || echo "WARNING: continuing without Docker. Tests, lint and notebooks work; make db-* needs Docker."
 endif
+
+check-docker: ## Check Docker + Compose v2 are installed and running (db-* on the host need it)
+	@command -v docker >/dev/null || { \
+	  echo "docker: command not found in this terminal (host)."; \
+	  echo "  - Not installed?             docs/SETUP.md step 1"; \
+	  echo "  - macOS + Docker Desktop:    open Docker Desktop once; if still missing, add ~/.docker/bin to PATH"; \
+	  echo "  - Windows + WSL2:            Docker Desktop > Settings > Resources > WSL integration > enable your distro"; \
+	  echo "  - Meant to use the Dev Container? Run make in the VS Code container terminal (step 2A)"; \
+	  exit 1; }
+	@docker compose version >/dev/null 2>&1 \
+	  || { echo "docker compose v2 not found: install the Compose plugin (docs/SETUP.md step 1)"; exit 1; }
+	@docker info >/dev/null 2>&1 \
+	  || { echo "Docker is installed but not running: start Docker Desktop, or 'sudo systemctl start docker'"; exit 1; }
+	@echo "docker ok: $$(docker --version)"
 
 env: ## Create .env from .env.example if it doesn't exist yet
 	@if [ ! -f .env ]; then cp .env.example .env; echo "created .env from .env.example"; fi
@@ -103,7 +116,7 @@ host-only:
 	@echo "Inside the Dev Container the editor manages the database container."
 	@echo "Run 'make $(MAKECMDGOALS)' from a terminal on your host instead."; exit 1
 else
-db-up: env ## Start PostGIS (host) or wait for it (Dev Container), then smoke-test it
+db-up: env check-docker ## Start PostGIS (host) or wait for it (Dev Container), then smoke-test it
 	$(COMPOSE) up -d --wait db
 	$(MAKE) db-smoke
 
