@@ -37,3 +37,8 @@
 
 ### Proposed next session
 - Unchanged: Sage's TODOs and the Phase 0 gate on his machine, then EDA 02.
+
+### Phase 0 gate
+- **Confirmed by Sage on his own machine, 2026-11-22**: `make setup`, `make test`, `make lint`
+  and `make db-up` work on both paths (2A Dev Container and 2B host). CI green on Linux,
+  macOS and Windows plus the Dev Container job. **Awaiting PM-chat sign-off.**
