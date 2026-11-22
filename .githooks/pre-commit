@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+# Git pre-commit hook (enabled by `make setup` via `git config core.hooksPath .githooks`).
+# Runs the checks in .pre-commit-config.yaml on the staged files.
+# It calls whatever `uv` finds in the current environment, so the same hook works on the
+# host and inside the Dev Container. (`pre-commit install` would hard-code one Python path
+# and break commits made from the other side.)
+exec uv run --frozen pre-commit run --hook-stage pre-commit

@@ -1,19 +1,22 @@
 # Local services. Phase 0 has only the database; Airflow joins in Phase 2.
+# The Dev Container adds a `dev` service on top of this file (.devcontainer/compose.yaml).
 # Learn: docs/learn/docker.md and docs/learn/postgis.md
 name: up-siting
 
 services:
   db:
-    # PostgreSQL 17 + PostGIS 3.6. Pinned to a major-minor tag so every machine gets the same
-    # database. See "Decisions needed" in docs/sessions/ for why 17 rather than 18.
-    image: postgis/postgis:17-3.6
+    # PostgreSQL 17 + PostGIS 3.6, pinned to a major-minor tag so every machine gets the same
+    # database. imresamu/postgis is the multi-arch build (amd64 + arm64) by a maintainer of the
+    # official postgis/postgis image, which is amd64-only and would run emulated on Apple Silicon.
+    image: imresamu/postgis:17-3.6
     container_name: up-siting-db
     restart: unless-stopped
     environment:
-      # Values come from .env (git-ignored). Compose fails fast if one is missing.
-      POSTGRES_USER: ${POSTGRES_USER:?set POSTGRES_USER in .env}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}
-      POSTGRES_DB: ${POSTGRES_DB:?set POSTGRES_DB in .env}
+      # Values come from .env (git-ignored) when it exists; the defaults match .env.example,
+      # so the database also starts before `make setup` (e.g. when a Dev Container opens).
+      POSTGRES_USER: ${POSTGRES_USER:-up_siting}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-change-me-locally}
+      POSTGRES_DB: ${POSTGRES_DB:-up_siting}
     ports:
       # Bound to 127.0.0.1 so the database is not exposed to your local network.
       - "127.0.0.1:${POSTGRES_PORT:-5432}:5432"

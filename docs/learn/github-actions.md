@@ -9,8 +9,10 @@ tests, and that the PostGIS container starts and passes its smoke test.
 
 ## Concepts that matter
 
-1. **Workflow → jobs → steps.** Our three jobs (`lint`, `test`, `db-smoke`) run in
-   parallel on separate machines; steps in a job run in order.
+1. **Workflow → jobs → steps.** Our jobs (`lint`, `test` ×3 OSes, `db-smoke`,
+   `devcontainer`) run in parallel on separate machines; steps in a job run in order.
+   A **matrix** (`os: [ubuntu-latest, macos-latest, windows-latest]`) runs one job definition
+   on several runners.
 2. **`uses:`** pulls a reusable action, pinned by version: `actions/checkout@v5`
    (get the code), `astral-sh/setup-uv@v7` (install uv, cache packages).
 3. **`run:`** is a shell command. We call `make` targets, so CI runs exactly what you run.

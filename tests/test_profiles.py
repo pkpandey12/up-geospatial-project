@@ -23,7 +23,7 @@ ALL_PROFILES = sorted(PRODUCT_PROFILES_DIR.glob("*.yaml"))
 
 @pytest.fixture
 def cbg_dict() -> dict[str, Any]:
-    return yaml.safe_load((PRODUCT_PROFILES_DIR / "cbg.yaml").read_text())
+    return yaml.safe_load((PRODUCT_PROFILES_DIR / "cbg.yaml").read_text(encoding="utf-8"))
 
 
 @pytest.mark.parametrize("path", ALL_PROFILES, ids=lambda p: p.name)
@@ -68,7 +68,7 @@ def test_schema_rejects_bad_profiles(cbg_dict: dict[str, Any], mutate, error_fra
 
 def test_product_id_must_match_file_name(tmp_path: Path, cbg_dict: dict[str, Any]) -> None:
     path = tmp_path / "not_cbg.yaml"
-    path.write_text(yaml.safe_dump(cbg_dict))
+    path.write_text(yaml.safe_dump(cbg_dict), encoding="utf-8")
     with pytest.raises(ValueError, match="must match the file name"):
         load_profile(path)
 
@@ -79,12 +79,12 @@ def test_cli_exit_codes(tmp_path: Path, cbg_dict: dict[str, Any]) -> None:
 
     bad = copy.deepcopy(cbg_dict)
     bad["land"]["acres_per_tpd"] = "lots"
-    (tmp_path / "cbg.yaml").write_text(yaml.safe_dump(bad))
+    (tmp_path / "cbg.yaml").write_text(yaml.safe_dump(bad), encoding="utf-8")
     assert main([str(tmp_path)]) == 1
 
 
 def test_committed_json_schema_is_up_to_date() -> None:
-    committed = (PRODUCT_PROFILES_DIR / JSON_SCHEMA_FILE).read_text()
+    committed = (PRODUCT_PROFILES_DIR / JSON_SCHEMA_FILE).read_text(encoding="utf-8")
     assert committed == json_schema(), (
         "Schema changed: run `uv run validate-profiles config/product_profiles --write-schema`"
     )

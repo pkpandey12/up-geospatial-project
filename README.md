@@ -8,9 +8,12 @@ on the key assumptions.
 
 Status: **Phase 0 (setup) built; Phase 1 (EDA) started.** Plan and rules: [`docs/BRIEF.md`](docs/BRIEF.md).
 
-## Quick start (Linux)
+## Quick start (Windows, macOS, Linux)
 
-Prerequisites: git, Docker Engine + Compose v2, uv, make. Install steps: [`docs/SETUP.md`](docs/SETUP.md).
+Two ways in, same commands ([`docs/SETUP.md`](docs/SETUP.md) has step-by-step installs):
+
+- **Dev Container** (identical on every OS): install Docker + VS Code, clone, *Reopen in Container*.
+- **On your host**: Docker + git + make + uv on macOS/Linux, or inside WSL2 on Windows.
 
 ```bash
 make setup    # tools check, .env, Python 3.12 + packages (uv), git hooks
@@ -29,6 +32,7 @@ notebooks/eda/   01_spine.ipynb (worked example), 02_coverage.ipynb (TODO), ...
 config/product_profiles/   <product>.yaml + profile.schema.json
 src/up_siting/   common/ (paths, units, names, db), extract/ (LGD PDF parser),
                  load/ (Phase 2), profiles/ (schema, validator, derived quantities)
+.devcontainer/  Dev Container (Linux toolchain image + compose service)
 dbt/seeds/       district spine, name map, aliases, lineage (dbt project itself: Phase 3)
 airflow/dags/    Phase 2
 db/              PostGIS init + smoke test SQL

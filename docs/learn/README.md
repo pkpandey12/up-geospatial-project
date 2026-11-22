@@ -9,6 +9,7 @@ here, the concepts that matter, the commands, common mistakes and interview ques
 | [uv](uv.md) | Phase 0: `pyproject.toml`, `uv.lock` |
 | [make](make.md) | Phase 0: `Makefile` |
 | [Docker & Compose](docker.md) | Phase 0: `docker-compose.yml` |
+| [Dev Containers](devcontainers.md) | Phase 0: `.devcontainer/` |
 | [PostgreSQL + PostGIS](postgis.md) | Phase 0: `db/` smoke test |
 | [pytest](pytest.md) | Phase 0: `tests/` |
 | [ruff & pre-commit](ruff-and-pre-commit.md) | Phase 0: `.pre-commit-config.yaml` |

@@ -1,0 +1,16 @@
+# Keep line endings LF on every OS. Windows git otherwise checks text out as CRLF, which
+# breaks shell scripts, the Makefile and SQL init scripts once they run inside Linux containers.
+* text=auto eol=lf
+
+# Windows-only scripts, if we ever add any, need CRLF.
+*.bat text eol=crlf
+*.cmd text eol=crlf
+*.ps1 text eol=crlf
+
+# Binary: never convert, never diff as text.
+*.pdf     binary
+*.parquet binary
+*.png     binary
+*.jpg     binary
+*.xlsx    binary
+*.zip     binary

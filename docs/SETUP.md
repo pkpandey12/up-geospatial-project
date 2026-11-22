@@ -1,21 +1,36 @@
-# Setting up your machine (Linux)
+# Setting up your machine (Windows, macOS, Linux)
 
-You have git. You need **Docker Engine with the Compose plugin**, **uv** and **make**.
-The steps below are for Ubuntu/Debian; for Fedora, Arch and others follow the linked docs.
+There are two ways to work on this project. Both use the same `make` commands and the same
+PostGIS container, and CI tests both on every push.
 
-## 1. make
+| | **A. Dev Container** | **B. On your host** |
+|---|---|---|
+| What runs where | Python, uv, make, psql run in a Linux container your editor opens; PostGIS runs beside it | Python, uv, make run on your machine; PostGIS runs in Docker |
+| You install | Docker + VS Code (or Cursor / a JetBrains IDE) | Docker + uv + make (+ git) |
+| Identical on every OS? | **Yes**: same Linux image everywhere | Nearly: macOS and Linux natively, Windows through WSL2 |
+| Best for | "No compatibility surprises", new collaborators | Speed, any editor, simplest debugging |
+
+You can switch between them at any time: the git hooks and `.env` work in both.
+
+> **Why not "just install the Linux steps on a Mac"?** macOS is Unix but not Linux: it has
+> no `apt-get`, and Docker can't run natively there. Docker Desktop runs a small Linux VM.
+> Windows needs WSL2 (a real Linux kernel) for the same reason.
+
+---
+
+## 1. Docker (both paths)
+
+| OS | Install | Check |
+|---|---|---|
+| **macOS** (Apple Silicon or Intel) | [Docker Desktop for Mac](https://docs.docker.com/desktop/setup/install/mac-install/) (OrbStack or Colima also work) | `docker run --rm hello-world && docker compose version` |
+| **Windows 10/11** | First WSL2: in PowerShell (admin) run `wsl --install`, reboot, finish the Ubuntu setup. Then [Docker Desktop for Windows](https://docs.docker.com/desktop/setup/install/windows-install/) with the **WSL 2 backend**; in *Settings → Resources → WSL integration* enable your Ubuntu distro | in the **Ubuntu** terminal: `docker run --rm hello-world` |
+| **Linux** (Ubuntu/Debian) | Docker Engine + Compose plugin, below | `docker run --rm hello-world && docker compose version` |
+
+Linux (Ubuntu shown; for Debian replace `ubuntu` with `debian` in the URLs; other distros:
+https://docs.docker.com/engine/install/):
 
 ```bash
-sudo apt-get update && sudo apt-get install -y make
-```
-
-## 2. Docker Engine + Compose plugin
-
-Official steps: https://docs.docker.com/engine/install/ubuntu/ (Debian: replace `ubuntu`
-with `debian` in the URLs). In short:
-
-```bash
-sudo apt-get install -y ca-certificates curl
+sudo apt-get update && sudo apt-get install -y ca-certificates curl
 sudo install -m 0755 -d /etc/apt/keyrings
 sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
 sudo chmod a+r /etc/apt/keyrings/docker.asc
@@ -24,52 +39,83 @@ echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.
   | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 sudo apt-get update
 sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+sudo usermod -aG docker "$USER"   # then log out and back in
 ```
 
-Let your user run docker without `sudo`, then **log out and back in** (or run `newgrp docker`):
+Both PostGIS (`imresamu/postgis`) and the Dev Container image are multi-arch, so they run
+natively on Apple Silicon and on Intel/AMD.
 
-```bash
-sudo usermod -aG docker "$USER"
-```
+---
 
-Check (should print "Hello from Docker!" and a Compose v2 version):
+## 2A. Dev Container path
 
-```bash
-docker run --rm hello-world && docker compose version
-```
+1. Install [VS Code](https://code.visualstudio.com/) and its **Dev Containers** extension
+   (`ms-vscode-remote.remote-containers`). Cursor has it built in; JetBrains IDEs: *Remote
+   Development → Dev Containers*.
+2. Clone the repo. **Windows:** clone inside WSL (`\\wsl$\Ubuntu\home\<you>\…`, i.e. from the
+   Ubuntu terminal), not under `C:\`: files under `C:\` are slow through Docker and pick up
+   CRLF line endings.
+   ```bash
+   git clone https://github.com/pkpandey12/up-geospatial-project.git
+   code up-geospatial-project
+   ```
+3. VS Code offers **Reopen in Container**; accept (or Command Palette → *Dev Containers:
+   Reopen in Container*). The first build takes a few minutes; it then runs `make setup`.
+4. In the editor's terminal (you're now inside Linux):
+   ```bash
+   make test
+   make lint
+   make db-up
+   ```
+   The editor starts and stops PostGIS for you, so `make db-down`, `db-reset` and `db-logs`
+   are host-only (run them from a host terminal if needed).
+5. Notebooks: open the `.ipynb` in VS Code and pick the kernel
+   `/home/vscode/.venv-up-siting/bin/python`, or run `make lab` and open the forwarded port 8888.
 
-> Don't install the old `docker-compose` (v1, with a hyphen) package; the Makefile uses
-> `docker compose` (v2, a plugin).
+---
 
-## 3. uv
+## 2B. Host path
 
-Official: https://docs.astral.sh/uv/getting-started/installation/
+Install **git, make and uv** (Docker from step 1):
 
-```bash
-curl -LsSf https://astral.sh/uv/install.sh | sh
-```
+| OS | git + make | uv |
+|---|---|---|
+| **macOS** | `xcode-select --install` (Apple's command-line tools include both) | `curl -LsSf https://astral.sh/uv/install.sh \| sh` or `brew install uv` |
+| **Windows** | in the **Ubuntu (WSL2)** terminal: `sudo apt-get update && sudo apt-get install -y git make` | in the Ubuntu terminal: `curl -LsSf https://astral.sh/uv/install.sh \| sh` |
+| **Linux** | `sudo apt-get install -y git make` | `curl -LsSf https://astral.sh/uv/install.sh \| sh` |
 
-Open a new terminal, then check with `uv --version`. You don't need to install Python yourself:
-uv downloads the version pinned in `.python-version` (3.12) on first `uv sync`.
+On Windows, do **everything** in the Ubuntu terminal and keep the repo in the Linux home
+folder (`~/…`), not under `/mnt/c/…`. Native PowerShell/cmd isn't supported: no `make`, and
+bash recipes.
 
-## 4. The project
+Open a new terminal, check `uv --version`, then:
 
 ```bash
 git clone https://github.com/pkpandey12/up-geospatial-project.git
 cd up-geospatial-project
-make setup     # checks tools, creates .env, installs Python + packages, installs git hooks
+make setup     # checks tools, creates .env, installs Python 3.12 + packages, enables git hooks
 make test      # unit + notebook tests (your TODOs show as "x" = expected fail)
 make lint      # ruff + profile validation
 make db-up     # starts PostGIS, waits until healthy, runs the smoke test
 ```
 
-If `make db-up` says port 5432 is already in use, you have a local Postgres running.
-Either stop it (`sudo systemctl stop postgresql`) or set `POSTGRES_PORT=5433` in `.env`.
+uv downloads Python 3.12 itself; you don't need to install Python.
 
-## 5. Your data files
+---
+
+## 3. Troubleshooting
+
+- **Port 5432 already in use** (a local Postgres): stop it, or set `POSTGRES_PORT=5433` in `.env`.
+- **`permission denied ... docker.sock`** on Linux: you skipped `usermod -aG docker` or didn't log out/in.
+- **Scripts fail with `$'\r': command not found`** (Windows): the repo was cloned with CRLF endings.
+  `.gitattributes` prevents this for new clones; re-clone inside WSL.
+- **Commit says `uv: command not found`**: the git hook runs `uv`; install uv on the side you
+  commit from (it's preinstalled in the Dev Container).
+
+## 4. Your data files
 
 Downloads live under `data/raw/<source_id>/ingest_date=YYYY-MM-DD/` (git-ignored). For EDA 01,
-put the LGD PDF you downloaded at:
+put the LGD PDF at:
 
 ```
 data/raw/lgd/ingest_date=2026-11-21/Districts_of_Uttar_Pradesh_State.pdf

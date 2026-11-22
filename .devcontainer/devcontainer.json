@@ -1,0 +1,35 @@
+// Dev Container: open this repo "in a container" from VS Code, Cursor or JetBrains and get
+// Python 3.12, uv, make and psql on Linux, with PostGIS running beside it. Only Docker and
+// the editor are needed on the host. Learn: docs/learn/devcontainers.md
+{
+  "name": "UP Factory Siting Tool",
+  "dockerComposeFile": ["../docker-compose.yml", "compose.yaml"],
+  "service": "dev",
+  "runServices": ["db", "dev"],
+  "workspaceFolder": "/workspaces/up-geospatial-project",
+  "shutdownAction": "stopCompose",
+  "remoteUser": "vscode",
+
+  // Runs once after the container is created: .env, Python packages, git hooks.
+  "postCreateCommand": "make setup",
+
+  // JupyterLab (`make lab`).
+  "forwardPorts": [8888],
+
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "ms-toolsai.jupyter",
+        "charliermarsh.ruff",
+        "redhat.vscode-yaml",
+        "tamasfe.even-better-toml"
+      ],
+      "settings": {
+        "python.defaultInterpreterPath": "/home/vscode/.venv-up-siting/bin/python",
+        "[python]": { "editor.defaultFormatter": "charliermarsh.ruff" },
+        "files.eol": "\n"
+      }
+    }
+  }
+}

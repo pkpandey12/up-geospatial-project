@@ -1,0 +1,22 @@
+# Adds the `dev` container on top of ../docker-compose.yml (devcontainer.json lists both).
+# NOTE: with several compose files, relative paths resolve from the FIRST file's folder,
+# i.e. the repo root, not from .devcontainer/.
+services:
+  dev:
+    build:
+      context: .
+      dockerfile: .devcontainer/Dockerfile
+    command: sleep infinity          # stay up; the editor attaches to it
+    volumes:
+      - .:/workspaces/up-geospatial-project:cached
+      - dev-uv-cache:/home/vscode/.cache/uv
+    environment:
+      # Inside the compose network the database is the `db` service on its own port 5432.
+      POSTGRES_HOST: db
+      POSTGRES_PORT: "5432"
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  dev-uv-cache:

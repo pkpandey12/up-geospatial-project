@@ -22,6 +22,10 @@ undefined names and mutable defaults are caught in milliseconds, including insid
    private keys) or are `local` (ours run `uv run ruff`, so hook, `make lint` and CI share one
    version from `uv.lock`).
 6. Hooks run only on **staged files**; `pre-commit run --all-files` checks everything.
+   We don't use `pre-commit install` (it hard-codes one Python path, which breaks when you
+   commit from both the host and the Dev Container). Instead `make setup` runs
+   `git config core.hooksPath .githooks`, and `.githooks/pre-commit` calls
+   `uv run pre-commit run`, which works on either side.
 7. A hook that **modifies** files (formatter, whitespace fixer) fails the commit; review,
    `git add` the fixes and commit again.
 
@@ -39,7 +43,7 @@ git commit --no-verify             # skip hooks (emergencies only; CI will still
 
 - Fighting the formatter. Accept its output; argue in `pyproject.toml` once, not per file.
 - Blanket `# noqa` without a code.
-- Forgetting `make setup` on a new clone, so hooks aren't installed.
+- Forgetting `make setup` on a new clone, so hooks aren't enabled.
 
 ## Interview question
 

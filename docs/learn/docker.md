@@ -10,10 +10,13 @@ seconds. Airflow joins the same Compose file in Phase 2.
 
 ## Concepts that matter
 
-1. **Image vs container.** Image = template (`postgis/postgis:17-3.6`). Container = a running
+1. **Image vs container.** Image = template (`imresamu/postgis:17-3.6`). Container = a running
    instance. Many containers can run from one image.
 2. **Tags and pinning.** `17-3.6` means Postgres 17, PostGIS 3.6. Never use `latest` for a
    database: an upgrade can change the on-disk format under your data.
+   **Architecture** is part of the image too: the official `postgis/postgis` is amd64-only,
+   so we use the multi-arch `imresamu/postgis` (amd64 + arm64), and Apple Silicon runs it natively.
+   Check any image with `docker manifest inspect <image>`.
 3. **Volumes** keep data outside the container's throwaway filesystem. `pgdata` survives
    `docker compose down`; `down -v` deletes it (`make db-reset`).
 4. **Bind mounts** map a host file into the container: we mount `db/init/20_project.sql` and
@@ -21,7 +24,8 @@ seconds. Airflow joins the same Compose file in Phase 2.
 5. **Ports.** `127.0.0.1:5432:5432` = host loopback port → container port. Binding to
    127.0.0.1 keeps the DB off your LAN.
 6. **Environment variables** configure the image (`POSTGRES_USER`, …). Compose reads `.env`
-   automatically; `${VAR:?msg}` fails fast if one is missing.
+   automatically; `${VAR:-default}` falls back to a default (ours match `.env.example`), while
+   `${VAR:?msg}` would fail fast instead.
 7. **Init scripts** in `/docker-entrypoint-initdb.d/` run **only on first start with an empty
    volume**. Changing them later does nothing until you reset the volume.
 8. **Healthchecks.** `pg_isready` tells Compose when the DB really accepts connections;
@@ -46,6 +50,8 @@ docker system df                     # disk used by images/volumes
 - Port 5432 already taken by a local Postgres → change `POSTGRES_PORT` in `.env`.
 - Running `docker` with `sudo` every time. Add yourself to the `docker` group (docs/SETUP.md).
   Note that group membership is effectively root on that machine.
+- Assuming a container is "the same everywhere" without checking its architecture: an
+  amd64-only image on an M-series Mac runs under emulation, slower and occasionally flaky.
 - Mounting the whole `db/init/` folder over `/docker-entrypoint-initdb.d/` would hide the
   image's own `10_postgis.sh`. We mount single files.
 

@@ -27,7 +27,14 @@ jobs:
         run: make lint
 
   test:
-    runs-on: ubuntu-latest
+    # Same tests on all three host OSes, to catch OS-specific Python bugs (paths, encodings,
+    # line endings). Windows runs pytest directly; day-to-day Windows work uses WSL2 or the
+    # Dev Container, where make is available.
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v5
       - uses: astral-sh/setup-uv@v7
@@ -35,7 +42,7 @@ jobs:
           enable-cache: true
       - run: uv sync --locked
       - name: Unit and notebook tests
-        run: make test
+        run: uv run pytest
 
   db-smoke:
     # Same command Sage runs locally: start PostGIS with docker compose and smoke-test it.
@@ -54,3 +61,19 @@ jobs:
       - name: Stop the database
         if: always()
         run: docker compose down -v
+
+  devcontainer:
+    # Builds the real Dev Container (.devcontainer/) with the official CLI, the same engine
+    # VS Code uses, and runs the Phase 0 gate commands inside it.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: Install the Dev Container CLI
+        run: npm install -g @devcontainers/cli@0.91
+      - name: Build and start (runs postCreateCommand = make setup)
+        run: devcontainer up --workspace-folder .
+      - name: make test, lint, db-up inside the container
+        run: devcontainer exec --workspace-folder . make test lint db-up
+      - name: Stop everything
+        if: always()
+        run: docker compose -p up-siting down -v
