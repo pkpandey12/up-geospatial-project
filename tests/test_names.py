@@ -83,3 +83,28 @@ def test_map_to_lgd_rejects_ambiguous_name_map(name_map: pd.DataFrame) -> None:
     )
     with pytest.raises(ValueError, match="agra"):
         map_to_lgd(pd.DataFrame({"district": ["Agra"]}), "district", bad)
+
+
+# ------------------------------------------------------------------ map_to_lgd review (2026-11-24)
+# Contract details found in review. strict=True: once fixed, these XPASS and pytest reports
+# that as a failure, which is your cue to delete the xfail line.
+@pytest.mark.xfail(strict=True, reason="review follow-up: map_to_lgd writes into name_map")
+def test_map_to_lgd_does_not_modify_name_map() -> None:
+    name_map = pd.DataFrame(
+        {
+            "alias_normalised": pd.Series(["agra", None], dtype=object),
+            "lgd_district_code": [118, 999],
+        }
+    )
+    before = name_map.copy()
+    map_to_lgd(pd.DataFrame({"district": ["Agra"]}), "district", name_map)
+    pd.testing.assert_frame_equal(name_map, before)
+
+
+@pytest.mark.xfail(strict=True, reason="review follow-up: map_to_lgd drops the input's index")
+def test_map_to_lgd_keeps_input_index(name_map: pd.DataFrame) -> None:
+    # Sources are often filtered first (index 10, 20, ...); the result must still line up
+    # with the input row-for-row so it can be joined or assigned back.
+    src = pd.DataFrame({"district": ["Agra", "Lemuria"]}, index=[10, 20])
+    mapped, _ = map_to_lgd(src, "district", name_map)
+    assert mapped.index.tolist() == [10, 20]
