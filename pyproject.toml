@@ -33,6 +33,7 @@ dev = [
 
 [project.scripts]
 validate-profiles = "up_siting.profiles.validate:main"
+register-raw = "up_siting.extract.manifest:main"
 
 [build-system]
 requires = ["hatchling>=1.27"]

@@ -38,7 +38,7 @@ UV      := uv
 COMPOSE := docker compose
 
 .PHONY: help check-tools check-docker env hooks setup lint format test todo ci profiles \
-        db-up db-wait db-smoke db-down db-reset db-psql db-logs lab clean host-only
+        db-up db-wait db-smoke db-down db-reset db-psql db-logs lab clean host-only register
 
 help: ## List the targets
 	@grep -hE '^[a-zA-Z_-]+:.*?## ' Makefile \
@@ -141,6 +141,14 @@ ifdef UP_SITING_DEVCONTAINER
 else
 	$(COMPOSE) exec db psql -U $(POSTGRES_USER) -d $(POSTGRES_DB)
 endif
+
+# ---------------------------------------------------------------- raw data
+# make register SRC=cgwb_gw FILE=~/Downloads/UP_2024.pdf URL=https://... [NOTES="..."] [LICENCE="..."]
+register: ## Register a downloaded file in data/raw/<SRC>/_manifest.jsonl (copies it in if needed)
+	@[ -n "$(SRC)" ] && [ -n "$(FILE)" ] && [ -n "$(URL)" ] \
+	  || { echo 'usage: make register SRC=<source_id> FILE=<path> URL=<url> [NOTES="..."] [LICENCE="..."]'; exit 1; }
+	$(UV) run register-raw --source "$(SRC)" --file "$(FILE)" --url "$(URL)" \
+	  $(if $(NOTES),--notes "$(NOTES)") $(if $(LICENCE),--licence "$(LICENCE)")
 
 # ---------------------------------------------------------------- notebooks
 lab: ## Start JupyterLab on the EDA notebooks

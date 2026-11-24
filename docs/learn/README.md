@@ -19,3 +19,5 @@ here, the concepts that matter, the commands, common mistakes and interview ques
 | [Notebooks & the EDA pattern](notebooks.md) | Phase 1: `01_spine.ipynb` |
 | [PDF tables (pdfplumber)](pdf-tables.md) | Phase 1: `extract/lgd.py` |
 | [pydantic](pydantic.md) | Phase 1: product profiles |
+| [Raw manifest (`make register`)](raw-manifest.md) | Phase 1: `extract/manifest.py` |
+| [Config overlays (private partner data)](config-overlays.md) | Phase 1: `config/product_profiles/private/` |
