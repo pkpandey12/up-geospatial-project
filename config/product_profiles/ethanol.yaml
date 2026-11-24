@@ -1,0 +1,150 @@
+# yaml-language-server: $schema=./profile.schema.json
+# Product profile: fuel ethanol (pilot 1). PUBLIC values only; the partner's figures go in
+# config/product_profiles/private/ethanol.yaml (git-ignored; shape: private/ethanol.example.yaml).
+# Schema: src/up_siting/profiles/schema.py. Check with: make profiles
+# Every non-null value has a provenance entry (source + confidence). null = not found yet.
+
+schema_version: 2
+product_id: ethanol
+product_name: Fuel ethanol (anhydrous, for blending)
+output_unit_note: >-
+  TPD = tonnes of ethanol per day. The industry quotes KLPD (kilolitres per day):
+  KLPD = TPD / 0.789 (ethanol density 0.789 t/kL at 20 °C), so 100 KLPD = 78.9 TPD.
+
+# Routes are alternatives: a plant runs on one feedstock route (dual-feed plants exist; the
+# partner will say). ESY 2026-27 (Nov 2026 - Oct 2027): cane juice, sugar syrup and B-heavy
+# molasses are barred; C-heavy molasses and grain remain eligible.
+default_route: c_heavy_molasses
+
+raw_materials:
+  - id: c_heavy_molasses
+    description: C-heavy molasses from sugar mills (final molasses)
+    route: c_heavy_molasses
+    tonnes_per_tonne_output: 5.63  # 225 L ethanol per t molasses -> 1 / (0.225 x 0.789)
+    price_inr_per_tonne: null  # traded, not regulated; no public district price found
+    quality_measure: null  # fermentable sugars of molasses; no district data -> factor 1.0
+    reference_quality: null
+    availability:
+      from_variable: sugarcane_crushed
+      ratio: 0.045  # t C-heavy molasses per t cane crushed
+      basis: mill crushing (sugar_mills); until S-1 (a), approximated by district cane production
+    eligible: true
+    eligibility_note: Eligible for ESY 2026-27.
+
+  - id: maize
+    description: Maize grain
+    route: maize
+    tonnes_per_tonne_output: 3.34  # 380 L per t grain -> 1 / (0.380 x 0.789)
+    price_inr_per_tonne: null  # varies by district: Agmarknet (agmarknet_ceda), card D-E9b
+    quality_measure: null  # starch content; no district data -> factor 1.0
+    reference_quality: null
+    availability:
+      from_variable: maize
+      ratio: 1.0
+      basis: district maize production (apy_idp, EDA 10)
+    eligible: true
+    eligibility_note: Eligible for ESY 2026-27 (grain).
+
+  - id: rice
+    description: Rice (broken or FCI surplus rice)
+    route: rice
+    tonnes_per_tonne_output: 2.82  # 450 L per t grain -> 1 / (0.450 x 0.789)
+    price_inr_per_tonne: null  # FCI OMSS price for distilleries is national (fci_rice_price, to find)
+    quality_measure: null
+    reference_quality: null
+    availability:
+      from_variable: rice
+      ratio: null  # broken-rice share of milled rice: to find; FCI rice isn't local supply anyway
+      basis: district rice production (apy_idp); FCI rice is allocated nationally
+    eligible: true
+    eligibility_note: Eligible for ESY 2026-27 (grain).
+
+  - id: cane_juice
+    description: Sugarcane juice (direct route)
+    route: cane_juice
+    tonnes_per_tonne_output: 18.1  # 70 L per t cane -> 1 / (0.070 x 0.789)
+    price_inr_per_tonne: 3900  # SAP 2025-26, common varieties: Rs 390 per quintal
+    quality_measure: sugar_recovery_pct
+    reference_quality: 9.5  # UP average recovery, 2024-25
+    availability:
+      from_variable: sugarcane
+      ratio: 1.0
+      basis: district cane production (apy_idp; 45 districts from 2020-21, DQ-007)
+    eligible: false
+    eligibility_note: NOT ELIGIBLE ESY 2026-27 (cane juice barred). Kept only for comparison.
+
+kwh_per_tonne_output: null  # distilleries mostly self-generate steam/power; partner
+kl_water_per_tonne_output: null  # varies by route and ZLD design; partner / CPCB charter
+
+water_quality:
+  grade: null
+  max_tds_mg_per_l: null
+  notes: null
+
+buyers:
+  - id: omc_ebp
+    description: Oil marketing companies (IOCL, BPCL, HPCL) under the Ethanol Blended Petrol programme
+  - id: potable_ena
+    description: Extra neutral alcohol for potable liquor (molasses route; outside blending)
+
+max_sourcing_distance_km: null  # partner
+
+land:
+  # Open question: does the CBG rule (TPD + 2 acres) hold for ethanol? Not assumed.
+  fixed_acres: null
+  acres_per_tpd: null
+
+tpd_range:
+  min: null  # partner (KLPD / 0.789)
+  max: null
+  default: null
+
+operating_days_per_year: null  # partner
+project_life_years: null  # partner
+
+provenance:
+  raw_materials.c_heavy_molasses.tonnes_per_tonne_output:
+    source: >-
+      NITI Aayog, Roadmap for Ethanol Blending in India 2020-25 (June 2021): C-heavy molasses
+      yields ~225 L/t. Figure recalled, not opened in session 2: verify against the report
+    confidence: moderate
+  raw_materials.c_heavy_molasses.availability.ratio:
+    source: >-
+      Industry norm: C-heavy (final) molasses is ~4-4.5% of cane crushed. Not opened in
+      session 2: verify (mill annual reports, ISMA)
+    confidence: weak
+  raw_materials.maize.tonnes_per_tonne_output:
+    source: >-
+      NITI Aayog Roadmap 2020-25 (2021): maize ~380-410 L/t (lower bound used). Recalled,
+      not opened in session 2: verify
+    confidence: moderate
+  raw_materials.maize.availability.ratio:
+    source: Definition (district maize production is the supply indicator)
+    confidence: strong
+  raw_materials.rice.tonnes_per_tonne_output:
+    source: >-
+      NITI Aayog Roadmap 2020-25 (2021): rice ~450-480 L/t (lower bound used). Recalled,
+      not opened in session 2: verify
+    confidence: moderate
+  raw_materials.cane_juice.tonnes_per_tonne_output:
+    source: >-
+      Industry figure ~70-75 L ethanol per t cane via the juice route (lower bound used).
+      Not opened in session 2: verify
+    confidence: weak
+  raw_materials.cane_juice.price_inr_per_tonne:
+    source: >-
+      UP state-advised price 2025-26: Rs 390/q common, Rs 400/q early varieties (Tribune,
+      via PM register 24 Nov 2026). 2026-27 SAP not yet announced
+    confidence: strong
+  raw_materials.cane_juice.reference_quality:
+    source: >-
+      UP sugar department, 9.5% recovery for 2024-25 (Organiser, 3 Jan 2026; design doc §1)
+    confidence: moderate
+  raw_materials.cane_juice.availability.ratio:
+    source: Definition (district cane production is the supply indicator)
+    confidence: strong
+
+notes: >-
+  Pilot 1. Public sources only (session 2, 24 Nov 2026). The partner's feedstock route,
+  ratios, prices, water, power, operating days, TPD range, project life and land rule go in
+  the private overlay by 15 Dec. Ethanol revenue (OMC price by feedstock) is not a cost term.

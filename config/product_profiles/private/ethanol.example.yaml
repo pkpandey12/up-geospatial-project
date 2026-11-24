@@ -1,0 +1,32 @@
+# SHAPE ONLY: every number below is a made-up placeholder, not the partner's.
+# Copy to config/product_profiles/private/ethanol.yaml (git-ignored) and replace them.
+# Only the keys you set override the public profile (config/product_profiles/ethanol.yaml);
+# every value set here is tagged `source: partner` automatically (confidence: strong unless
+# you say otherwise under `provenance`). Raw materials merge by `id`; a new id is added.
+# Check: uv run validate-profiles config/product_profiles --private --show-missing
+
+default_route: maize
+
+raw_materials:
+  - id: maize
+    tonnes_per_tonne_output: 9.99      # placeholder
+    price_inr_per_tonne: 99999         # placeholder: his recent purchase price
+
+kwh_per_tonne_output: 999              # placeholder
+kl_water_per_tonne_output: 99          # placeholder
+operating_days_per_year: 333           # placeholder
+project_life_years: 33                 # placeholder
+
+land:
+  fixed_acres: 99                      # placeholder
+  acres_per_tpd: 0.99                  # placeholder
+
+tpd_range:
+  min: 1
+  max: 999
+  default: 99
+
+provenance:
+  raw_materials.maize.price_inr_per_tonne:
+    confidence: moderate
+    note: "placeholder: e.g. average of his last three purchases"

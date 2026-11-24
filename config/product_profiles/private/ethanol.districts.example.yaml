@@ -1,0 +1,13 @@
+# SHAPE ONLY. The partner's sealed good / avoid districts for one product, given BEFORE he
+# sees any output (design doc, EDA step 7). Copy to ethanol.districts.yaml (git-ignored).
+# Use LGD district codes (the spine: dbt/seeds/lgd_district_spine.csv); names are optional.
+
+product_id: ethanol
+given_on: 2026-12-15          # placeholder date
+sealed: true                  # don't open until the prototype ranking exists
+good:
+  - lgd_district_code: 0      # placeholder
+    reason: "placeholder: why he'd build here"
+avoid:
+  - lgd_district_code: 0      # placeholder
+    reason: "placeholder: why he wouldn't"

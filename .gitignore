@@ -3,6 +3,10 @@
 *.pem
 *.key
 
+# --- partner data: confidential, never commit (docs/learn/config-overlays.md)
+**/private/*
+!**/private/*.example.yaml
+
 # --- data: downloaded and derived files stay local (see data/README.md)
 data/*
 !data/README.md

@@ -16,6 +16,17 @@ repos:
         args: ["--maxkb=1024"]   # data belongs in data/ (git-ignored), not in commits
       - id: detect-private-key
 
+  # Confidential partner data lives in git-ignored private/ folders. This blocks it even if
+  # someone forces it past .gitignore (git add -f). Only *.example.yaml shape files pass.
+  - repo: local
+    hooks:
+      - id: no-private-files
+        name: block partner data under private/
+        entry: "Files under a private/ folder hold confidential partner data and must never be committed. Unstage them"
+        language: fail
+        files: (^|/)private/
+        exclude: \.example\.yaml$
+
   # Ruff and the profile validator run from the project's own environment (uv.lock),
   # so the hook, `make lint` and CI always use the same versions.
   - repo: local
@@ -34,4 +45,4 @@ repos:
         name: validate product profiles
         entry: uv run --frozen validate-profiles
         language: system
-        files: ^config/product_profiles/.*\.ya?ml$
+        files: ^config/product_profiles/[^/]+\.ya?ml$

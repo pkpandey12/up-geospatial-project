@@ -29,6 +29,7 @@ Tick as you go. "Size" is an estimate unless marked ✓.
 | ☐ | 12 | [D-E11](#d-e11-odop-reference) | `sansad_odop` | LS Q 493 (28 Nov 2024) PDF | PDF ~1 MB | Reference check |
 | ☐ | 13 | [D-E1b](#d-e1b-des-apy-official-optional) | `apy_des` | DES APY UP export for 2024-25 | XLSX/CSV 1–5 MB | Only if DQ-006 needs it |
 | ☐ | 14 | [D-E3](#d-e3-icrisat-district-level-database-low) | `icrisat_dld` | ICRISAT-TCI apportioned crop file | CSV/XLSX 5–50 MB | History only; skip unless needed |
+| ☐ | 7b | [D-E12](#d-e12-niti-aayog-ethanol-roadmap-verifies-the-profile) | `niti_ethanol_roadmap` | NITI Aayog, Roadmap for Ethanol Blending in India 2020-25 | PDF 2–10 MB | Verifies the ethanol yields in `ethanol.yaml` |
 
 **About 1–2 hours** for priorities 1–6 if the sites behave; circle rates are the slow one.
 
@@ -236,6 +237,15 @@ Sugarcane, Rice, Maize, Wheat, Years: 2022-23 to 2024-25, district level → Exc
 Skip unless the EDA needs pre-1997 history: DES on India Data Portal already gives 1997-98
 onward with LGD codes. https://tci.cornell.edu/data → ICRISAT-TCI DLD → apportioned crop
 area/production (registration may be required; record the terms you accept in `NOTES`).
+
+### D-E12. NITI Aayog ethanol roadmap (verifies the profile)
+
+The ethanol profile's yields (C-heavy molasses 225 L/t, maize 380 L/t, rice 450 L/t) were
+recalled from this report, not opened (the session can't reach niti.gov.in). Download it
+so session 3 can check the yield table and fix `ethanol.yaml`'s provenance.
+https://www.niti.gov.in/ → search "Roadmap for Ethanol Blending in India 2020-25" → PDF.
+`make register SRC=niti_ethanol_roadmap FILE=... URL="..."`. **Licence:** government report,
+not stated; only a few numbers are cited from it.
 
 ---
 

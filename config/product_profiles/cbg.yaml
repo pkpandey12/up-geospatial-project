@@ -1,38 +1,69 @@
 # yaml-language-server: $schema=./profile.schema.json
-# Product profile: Compressed Biogas (CBG). EXAMPLE profile; pilot products not chosen yet.
+# Product profile: Compressed Biogas (CBG), pilot 2. PUBLIC values only; the partner's
+# figures go in config/product_profiles/private/cbg.yaml (git-ignored).
 # Schema: src/up_siting/profiles/schema.py. Check with: make profiles
-# Rule: every key stays; unknown values are `null  # TODO: partner`.
 # TPD = tonnes of CBG OUTPUT per day (confirmed by the partners, 22 Nov 2026).
+# Every non-null value has a provenance entry (source + confidence). null = not found yet.
 
-schema_version: 1
+schema_version: 2
 product_id: cbg
 product_name: Compressed Biogas (CBG)
+output_unit_note: TPD = tonnes of CBG per day.
+
+# Each feedstock is its own route for now (mono-digestion); co-digestion mixes are the
+# partner's call. Residue ratios arrive with card D-C2 (MNRE/ASCI study).
+default_route: press_mud
 
 raw_materials:
-  # Candidate feedstocks for UP; the partners confirm which apply and the ratios.
   - id: press_mud
     description: Sugar-mill filter cake (UP's sugarcane belt)
-    tonnes_per_tonne_output: null  # TODO: partner
-    quality_factor: null  # TODO: partner
+    route: press_mud
+    tonnes_per_tonne_output: null  # card D-C2 / partner
+    price_inr_per_tonne: null
+    quality_measure: null  # CBG feedstock quality factor starts at 1.0 (decided 24 Nov)
+    reference_quality: null
+    availability:
+      from_variable: sugarcane_crushed
+      ratio: 0.035  # t press mud per t cane crushed
+      basis: mill crushing (sugar_mills); state check 3.78 Mt (CSE, 2024)
+    eligible: true
+    eligibility_note: null
   - id: paddy_straw
     description: Rice straw (crop residue)
-    tonnes_per_tonne_output: null  # TODO: partner
-    quality_factor: null  # TODO: partner
+    route: paddy_straw
+    tonnes_per_tonne_output: null  # card D-C2 / partner
+    price_inr_per_tonne: null
+    quality_measure: null
+    reference_quality: null
+    availability:
+      from_variable: rice
+      ratio: null  # residue-to-crop ratio x surplus fraction, card D-C2
+      basis: district rice production (apy_idp) x residue ratio x surplus fraction
+    eligible: true
+    eligibility_note: null
   - id: cattle_dung
-    description: Cattle dung
-    tonnes_per_tonne_output: null  # TODO: partner
-    quality_factor: null  # TODO: partner
+    description: Cattle and buffalo dung
+    route: cattle_dung
+    tonnes_per_tonne_output: null  # card D-C2 / partner
+    price_inr_per_tonne: null
+    quality_measure: null
+    reference_quality: null
+    availability:
+      from_variable: bovine_population
+      ratio: null  # t dung per head per year; card D-C1 / literature
+      basis: livestock census (livestock_census) x dung per head x collectable share
+    eligible: true
+    eligibility_note: null
 
-kwh_per_tonne_output: null  # TODO: partner
-kl_water_per_tonne_output: null  # TODO: partner
+kwh_per_tonne_output: null  # partner
+kl_water_per_tonne_output: null  # partner
 
 water_quality:
-  grade: null  # TODO: partner (any | raw | treated | potable)
-  max_tds_mg_per_l: null  # TODO: partner
+  grade: null  # partner (any | raw | treated | potable)
+  max_tds_mg_per_l: null
   notes: null
 
 buyers:
-  # Candidate buyer types; the partners confirm.
   - id: omc_satat
     description: Oil marketing companies under the SATAT offtake scheme
   - id: cgd_network
@@ -40,19 +71,34 @@ buyers:
   - id: fom_buyers
     description: Fermented organic manure (by-product) buyers
 
-max_sourcing_distance_km: null  # TODO: partner
+max_sourcing_distance_km: null  # partner
 
 land:
-  # plot_acres = fixed_acres + acres_per_tpd x tpd
+  # plot_acres = fixed_acres + acres_per_tpd x tpd (3 TPD -> 5 acres)
   fixed_acres: 2
   acres_per_tpd: 1
 
 tpd_range:
-  min: null  # TODO: partner
-  max: null  # TODO: partner
+  min: null  # partner
+  max: null
+  default: null
 
-operating_days_per_year: null  # TODO: partner
-project_life_years: null  # TODO: partner
+operating_days_per_year: null  # partner
+project_life_years: null  # partner
+
+provenance:
+  land.fixed_acres:
+    source: Partner's rule of thumb (TPD + 2 acres), stated in the design doc (24 Nov 2026)
+    confidence: strong
+  land.acres_per_tpd:
+    source: Partner's rule of thumb (TPD + 2 acres), stated in the design doc (24 Nov 2026)
+    confidence: strong
+  raw_materials.press_mud.availability.ratio:
+    source: >-
+      Industry norm: press mud is ~3-4% of cane crushed; consistent with CSE's 3.78 Mt state
+      total (CBG landscape in UP, Mar 2024). Not opened in session 2: verify
+    confidence: weak
 
 notes: >-
-  Example profile from the brief (v2.1). Only the land rule comes from the partners so far.
+  Pilot 2. Public values only (session 2, 24 Nov 2026). Feedstock ratios come from the
+  MNRE/ASCI study (card D-C2); everything else from the partner's private overlay.

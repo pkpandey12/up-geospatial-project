@@ -12,12 +12,20 @@ Difficulty: 1 = warm-up, 2 = needs thought, 3 = design work.
 
 ## Phase 1: EDA
 
+Phase 1 split: Claude loads each source into a tidy, LGD-keyed table (loader notebooks
+10, 11, …); you build the joins, the analysis and the cost model. Order below = suggested
+order (ethanol first).
+
 | ✓ | Item | File | Checked by | Practises | Diff. |
 |---|---|---|---|---|---|
-| ☐ | **Review follow-up:** `map_to_lgd` must not modify `name_map`, and must keep the input's index; replace `drop(..., inplace=True)` (deprecated in pandas 3) | `src/up_siting/common/names.py` | `tests/test_names.py::test_map_to_lgd_does_not_modify_name_map`, `::test_map_to_lgd_keeps_input_index` (strict xfail: delete the `xfail` line once they pass) | side effects, index alignment, pandas deprecations | 1 |
-| ⏸ | EDA step 2: coverage audit (**on hold**: design doc updated; re-scoped in session 2) | `notebooks/eda/02_coverage.ipynb` | the `assert` cell at the end of each section | registry of sources, cross join, pivot, gap analysis | 2 |
-| ☐ | Add each source you download | `docs/data-sources.md` | notebook 02, section 1 assert | provenance, licences | 1 |
+| ☐ | **Manual downloads**, priorities 1–6 first (`make register` for each) | `docs/eda/downloads.md` checklist | the manifest; EDA 02 §1 assert | provenance, licences | 1 |
+| ☐ | **Review follow-up:** `map_to_lgd` must not modify `name_map`, must keep the input's index; replace `drop(..., inplace=True)` (deprecated in pandas 3) | `src/up_siting/common/names.py` | `tests/test_names.py::test_map_to_lgd_does_not_modify_name_map`, `::test_map_to_lgd_keeps_input_index` (strict xfail: delete the `xfail` line once they pass) | side effects, index alignment, pandas deprecations | 1 |
+| ☐ | `effective_input_ratio(raw_material, district_quality)`: the relative quality factor | `src/up_siting/profiles/derive.py` | `tests/test_profiles_derive.py::test_effective_input_ratio*` | guarding optional config, a modelling rule in code | 1 |
+| ☐ | `route_feedstock_tonnes(profile, tpd, route)`: feedstock for one ethanol route | `src/up_siting/profiles/derive.py` | `tests/test_profiles_derive.py::test_route_feedstock_*` | reuse, filtering config | 1 |
+| ☐ | EDA step 2: coverage audit (re-scoped: reads manifests + loader outputs) | `notebooks/eda/02_coverage.ipynb` | the `assert` cell at the end of each section | DuckDB over JSONL and Parquet, cross join, pivot, gap analysis | 2 |
+| ☐ | EDA steps 5–6: the district table (ethanol), coverage per column, redundancy | `notebooks/eda/03_district_table.ipynb` | assert cells (75 rows, unique LGD, coverage) | left joins onto a spine, `validate=`, Spearman | 2 |
 | ☐ | Log every gap/surprise | `docs/eda/data-quality-log.md` | review | data-quality discipline | 1 |
+| ☐ | Stretch: make `size_class` table-driven (one constant of thresholds; decided 24 Nov) | `src/up_siting/profiles/derive.py` | existing `test_size_class_*` | data over code | 1 |
 
 ## Done
 

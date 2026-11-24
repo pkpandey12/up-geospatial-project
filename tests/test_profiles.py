@@ -40,9 +40,28 @@ def test_cbg_land_rule_from_brief() -> None:
 def test_missing_fields_lists_partner_todos() -> None:
     missing = missing_fields(load_profile(PRODUCT_PROFILES_DIR / "cbg.yaml"))
     assert "kwh_per_tonne_output" in missing
-    assert "raw_materials[0].quality_factor" in missing
+    assert "raw_materials.paddy_straw.tonnes_per_tonne_output" in missing  # by id, not index
     assert "land.fixed_acres" not in missing
     assert "notes" not in missing  # free text is never "missing"
+
+
+def test_ethanol_profile_follows_esy_2026_27_rule() -> None:
+    eth = load_profile(PRODUCT_PROFILES_DIR / "ethanol.yaml")
+    by_id = {rm.id: rm for rm in eth.raw_materials}
+    assert {"c_heavy_molasses", "maize", "rice", "cane_juice"} <= set(by_id)
+    assert by_id["cane_juice"].eligible is False
+    assert "NOT ELIGIBLE ESY 2026-27" in (by_id["cane_juice"].eligibility_note or "")
+    assert all(by_id[i].eligible for i in ["c_heavy_molasses", "maize", "rice"])
+    assert eth.route_materials()[0].id == "c_heavy_molasses"  # default route
+    assert [rm.id for rm in eth.route_materials("maize")] == ["maize"]
+
+
+@pytest.mark.parametrize("path", ALL_PROFILES, ids=lambda p: p.name)
+def test_every_public_value_has_a_source_and_confidence(path: Path) -> None:
+    profile = load_profile(path)
+    for prov in profile.provenance.values():
+        assert prov.source.strip() and prov.confidence
+        assert prov.source != "partner", "partner values belong in the private overlay"
 
 
 @pytest.mark.parametrize(
@@ -52,7 +71,12 @@ def test_missing_fields_lists_partner_todos() -> None:
         (lambda d: d.pop("kwh_per_tonne_output"), "Field required"),
         (lambda d: d["land"].update(fixed_acres=-1), "greater than or equal to 0"),
         (lambda d: d["tpd_range"].update(min=10, max=5), "greater than max"),
-        (lambda d: d["raw_materials"][0].update(quality_factor=1.5), "less than or equal to 1"),
+        (lambda d: d["raw_materials"][0].update(quality_factor=0.5), "Extra inputs"),
+        (lambda d: d.update(kwh_per_tonne_output=5), "values without provenance"),
+        (lambda d: d["provenance"].update(x={"source": "x", "confidence": "weak"}), "don't exist"),
+        (lambda d: d["provenance"]["land.fixed_acres"].update(confidence="sure"), "Input should"),
+        (lambda d: d.update(default_route="biogas"), "not one of"),
+        (lambda d: d["tpd_range"].update(min=1, max=5, default=9), "outside"),
         (lambda d: d.update(raw_materials=[]), "at least 1 item"),
         (lambda d: d.update(operating_days_per_year=400), "less than or equal to 366"),
         (lambda d: d.update(product_id="CBG gas"), "String should match pattern"),
@@ -75,7 +99,7 @@ def test_product_id_must_match_file_name(tmp_path: Path, cbg_dict: dict[str, Any
 
 def test_cli_exit_codes(tmp_path: Path, cbg_dict: dict[str, Any]) -> None:
     assert main([str(PRODUCT_PROFILES_DIR)]) == 0
-    assert main([str(PRODUCT_PROFILES_DIR), "--strict"]) == 1  # CBG still has partner nulls
+    assert main([str(PRODUCT_PROFILES_DIR), "--strict"]) == 1  # profiles still have nulls
 
     bad = copy.deepcopy(cbg_dict)
     bad["land"]["acres_per_tpd"] = "lots"

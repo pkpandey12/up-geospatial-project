@@ -1,10 +1,10 @@
 """Quantities derived from a product profile at a chosen plant size (TPD).
 
-All four functions are TODO(sage). Tests: tests/test_profiles_derive.py (run `make todo`).
+Functions are TODO(sage). Tests: tests/test_profiles_derive.py (run `make todo`).
 TPD = tonnes of OUTPUT per day.
 """
 
-from up_siting.profiles.schema import LandRule, ProductProfile, SizeClass
+from up_siting.profiles.schema import LandRule, ProductProfile, RawMaterial, SizeClass
 
 
 def plot_acres(land: LandRule, tpd: float) -> float:
@@ -67,7 +67,8 @@ def annual_feedstock_tonnes(profile: ProductProfile, tpd: float) -> dict[str, fl
 
     Returns: {raw_material.id: annual_output_tonnes x tonnes_per_tonne_output}.
     Edge cases: any tonnes_per_tonne_output is None -> ValueError naming the raw material.
-                Do NOT apply quality_factor yet: what it multiplies is a "Decision needed".
+                Sums EVERY raw material: right for single-route products only; for
+                alternatives (ethanol) use route_feedstock_tonnes.
     Practises: reuse (call annual_output_tonnes), dict comprehensions.
     """
     annual_output = annual_output_tonnes(profile, tpd)
@@ -77,3 +78,46 @@ def annual_feedstock_tonnes(profile: ProductProfile, tpd: float) -> dict[str, fl
             raise ValueError(f"raw_material {raw.id} has tonnes_per_tonne_output = None")
         feedstock[raw.id] = annual_output * raw.tonnes_per_tonne_output
     return feedstock
+
+
+def effective_input_ratio(raw_material: RawMaterial, district_quality: float | None) -> float:
+    """Tonnes of input per tonne of output in a district, adjusted for its quality.
+
+    Rule (decided 24 Nov 2026): effective = base / (district_quality / reference_quality).
+    Better-than-reference quality (e.g. higher sugar recovery) needs LESS input.
+    Inputs:  raw_material from a profile; district_quality, the district's value of
+             raw_material.quality_measure (None when the district has no data).
+    Returns: the effective ratio (float).
+    Edge cases: tonnes_per_tonne_output is None -> ValueError naming the raw material;
+                district_quality None, or quality_measure/reference_quality None -> factor 1.0
+                (return the base ratio); district_quality <= 0 -> ValueError.
+    Practises: guarding optional config, ratio arithmetic, documenting a modelling rule.
+    """
+    # 1. Reject a missing base ratio (name the raw material in the message).
+    # 2. If there's nothing to compare (no measure, no reference or no district value),
+    #    return the base ratio unchanged.
+    # 3. Reject a non-positive district value.
+    # 4. factor = district_quality / reference_quality; return base / factor.
+    raise NotImplementedError("TODO(sage): implement effective_input_ratio")
+
+
+def route_feedstock_tonnes(
+    profile: ProductProfile, tpd: float, route: str | None = None
+) -> dict[str, float]:
+    """Tonnes per year of each raw material on ONE feedstock route, keyed by raw material id.
+
+    Why: ethanol's raw materials are alternatives (C-heavy molasses OR maize OR rice), so
+    annual_feedstock_tonnes (which sums every raw material) over-counts. Routes fix that.
+    Inputs:  profile; tpd (tonnes of output per day); route, or None for default_route.
+    Returns: {raw_material.id: annual_output_tonnes x tonnes_per_tonne_output} for the
+             materials on that route only (all materials if the profile has no routes).
+    Edge cases: unknown route -> ValueError (profile.route_materials raises it);
+                a material on the route without a ratio -> ValueError naming it;
+                an ineligible material (eligible: false) is still computed (the caller
+                decides whether to show it), but its id must be in the result.
+    Practises: reuse (annual_output_tonnes, profile.route_materials), filtering config.
+    """
+    # 1. annual = annual_output_tonnes(profile, tpd)
+    # 2. materials = profile.route_materials(route)
+    # 3. Same loop as annual_feedstock_tonnes, over `materials` only.
+    raise NotImplementedError("TODO(sage): implement route_feedstock_tonnes")

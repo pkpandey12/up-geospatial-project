@@ -1,30 +1,40 @@
 """Validate product profiles: `uv run validate-profiles config/product_profiles [--show-missing]`.
 
 Exit code 0 when every file is valid, 1 otherwise, so it works in make, pre-commit and CI.
-Null values are allowed (they mark data still waiting on the partners); pass --strict to
-treat them as errors once the profile is meant to be complete.
+Null values are allowed (they mark data still missing); pass --strict to treat them as
+errors once the profile is meant to be complete. Pass --private to validate each profile
+WITH its private overlay (config/product_profiles/private/<id>.yaml) applied: local only,
+never in CI.
 """
 
 import argparse
 import json
 import sys
-from collections.abc import Iterator
 from pathlib import Path
-from typing import Any
 
 import yaml
 from pydantic import ValidationError
 
-from up_siting.profiles.schema import ProductProfile
+from up_siting.profiles.overlay import apply_overlay, read_overlay
+from up_siting.profiles.schema import ProductProfile, value_paths
 
 JSON_SCHEMA_FILE = "profile.schema.json"
+PRIVATE_SUBDIR = "private"
 
 
-def load_profile(path: Path) -> ProductProfile:
-    """Parse one YAML file into a validated ProductProfile (raises ValidationError / ValueError)."""
+def load_profile(path: Path, private_dir: Path | None = None) -> ProductProfile:
+    """Parse one YAML file into a validated ProductProfile (raises ValidationError / ValueError).
+
+    private_dir: if given and it holds <product_id>.yaml, that overlay is applied first
+    (partner values, tagged `source: partner`). Tests and CI never pass it.
+    """
     data = yaml.safe_load(path.read_text(encoding="utf-8"))
     if not isinstance(data, dict):
         raise ValueError(f"{path}: expected a YAML mapping at the top level")
+    if private_dir is not None:
+        overlay = read_overlay(private_dir, path.stem)
+        if overlay is not None:
+            data = apply_overlay(data, overlay)
     profile = ProductProfile.model_validate(data)
     if profile.product_id != path.stem:
         raise ValueError(
@@ -34,20 +44,20 @@ def load_profile(path: Path) -> ProductProfile:
 
 
 def missing_fields(profile: ProductProfile) -> list[str]:
-    """Dotted paths of every field that is null, e.g. 'raw_materials[0].quality_factor'."""
+    """Paths of every value that is null, e.g. 'raw_materials.maize.price_inr_per_tonne'.
 
-    def walk(value: Any, prefix: str) -> Iterator[str]:
-        if value is None:
-            yield prefix
-        elif isinstance(value, dict):
-            for key, sub in value.items():
-                yield from walk(sub, f"{prefix}.{key}" if prefix else key)
-        elif isinstance(value, list):
-            for i, sub in enumerate(value):
-                yield from walk(sub, f"{prefix}[{i}]")
+    Free text (notes, descriptions) is never "missing". Raw materials are addressed by id.
+    """
+    return [p for p, v in value_paths(profile.model_dump(mode="json")).items() if v is None]
 
-    optional_text = {"notes", "description"}  # free text: null is fine, not "missing"
-    return [p for p in walk(profile.model_dump(), "") if p.rsplit(".", 1)[-1] not in optional_text]
+
+def provenance_summary(profile: ProductProfile) -> dict[str, int]:
+    """How many values come from each confidence level, plus how many are the partner's."""
+    counts: dict[str, int] = {"strong": 0, "moderate": 0, "weak": 0, "partner": 0}
+    for prov in profile.provenance.values():
+        counts[prov.confidence.value] += 1
+        counts["partner"] += prov.source == "partner"
+    return counts
 
 
 def json_schema() -> str:
@@ -68,6 +78,9 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--show-missing", action="store_true", help="list null fields")
     parser.add_argument("--strict", action="store_true", help="fail if any field is null")
     parser.add_argument(
+        "--private", action="store_true", help=f"apply overlays from <folder>/{PRIVATE_SUBDIR}/"
+    )
+    parser.add_argument(
         "--write-schema", action="store_true", help=f"(re)write {JSON_SCHEMA_FILE} in each folder"
     )
     args = parser.parse_args(argv)
@@ -84,8 +97,9 @@ def main(argv: list[str] | None = None) -> int:
 
     failed = False
     for path in files:
+        private_dir = path.parent / PRIVATE_SUBDIR if args.private else None
         try:
-            profile = load_profile(path)
+            profile = load_profile(path, private_dir)
         except ValidationError as exc:
             failed = True
             print(f"FAIL {path}")
@@ -102,7 +116,14 @@ def main(argv: list[str] | None = None) -> int:
         if args.strict and missing:
             failed = True
         status = "FAIL" if args.strict and missing else "ok  "
-        print(f"{status} {path} ({len(missing)} fields waiting on partners)")
+        prov = provenance_summary(profile)
+        overlay = (
+            " + private overlay" if private_dir and (private_dir / path.name).is_file() else ""
+        )
+        print(
+            f"{status} {path}{overlay} ({len(missing)} null; sourced: {prov['strong']} strong, "
+            f"{prov['moderate']} moderate, {prov['weak']} weak; {prov['partner']} from partner)"
+        )
         if args.show_missing or args.strict:
             for field in missing:
                 print(f"  - {field}")

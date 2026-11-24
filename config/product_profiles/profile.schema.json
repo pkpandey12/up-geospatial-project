@@ -1,5 +1,48 @@
 {
   "$defs": {
+    "Availability": {
+      "additionalProperties": false,
+      "description": "How district supply of this input is estimated from another district variable.\n\ne.g. C-heavy molasses = cane crushed x 0.045; paddy straw = rice production x 1.5.",
+      "properties": {
+        "from_variable": {
+          "description": "District variable, e.g. 'sugarcane' production.",
+          "pattern": "^[a-z][a-z0-9_]*$",
+          "title": "From Variable",
+          "type": "string"
+        },
+        "ratio": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Tonnes of this input per tonne of from_variable.",
+          "title": "Ratio"
+        },
+        "basis": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Basis"
+        }
+      },
+      "required": [
+        "from_variable",
+        "ratio"
+      ],
+      "title": "Availability",
+      "type": "object"
+    },
     "Buyer": {
       "additionalProperties": false,
       "properties": {
@@ -26,6 +69,15 @@
       ],
       "title": "Buyer",
       "type": "object"
+    },
+    "Confidence": {
+      "enum": [
+        "strong",
+        "moderate",
+        "weak"
+      ],
+      "title": "Confidence",
+      "type": "string"
     },
     "LandRule": {
       "additionalProperties": false,
@@ -63,6 +115,38 @@
       "title": "LandRule",
       "type": "object"
     },
+    "Provenance": {
+      "additionalProperties": false,
+      "properties": {
+        "source": {
+          "description": "Citation, or 'partner' for private values.",
+          "minLength": 1,
+          "title": "Source",
+          "type": "string"
+        },
+        "confidence": {
+          "$ref": "#/$defs/Confidence"
+        },
+        "note": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Note"
+        }
+      },
+      "required": [
+        "source",
+        "confidence"
+      ],
+      "title": "Provenance",
+      "type": "object"
+    },
     "RawMaterial": {
       "additionalProperties": false,
       "properties": {
@@ -83,6 +167,19 @@
           "default": null,
           "title": "Description"
         },
+        "route": {
+          "anyOf": [
+            {
+              "pattern": "^[a-z][a-z0-9_]*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Inputs sharing a route are used together; routes are alternatives.",
+          "title": "Route"
+        },
         "tonnes_per_tonne_output": {
           "anyOf": [
             {
@@ -93,28 +190,83 @@
               "type": "null"
             }
           ],
-          "description": "Tonnes of this input per tonne of output.",
+          "description": "Tonnes of this input per tonne of output, at reference quality.",
           "title": "Tonnes Per Tonne Output"
         },
-        "quality_factor": {
+        "price_inr_per_tonne": {
           "anyOf": [
             {
-              "exclusiveMinimum": 0,
-              "maximum": 1,
+              "minimum": 0,
               "type": "number"
             },
             {
               "type": "null"
             }
           ],
-          "description": "0-1 adjustment for usable quality. Meaning still to be confirmed with the partners (see Decisions needed).",
-          "title": "Quality Factor"
+          "description": "Statewide price if regulated (e.g. cane SAP); null if it varies by district.",
+          "title": "Price Inr Per Tonne"
+        },
+        "quality_measure": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "District quality variable, e.g. 'sugar_recovery_pct'; null = factor 1.0.",
+          "title": "Quality Measure"
+        },
+        "reference_quality": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Value of quality_measure at which tonnes_per_tonne_output applies.",
+          "title": "Reference Quality"
+        },
+        "availability": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Availability"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "eligible": {
+          "default": true,
+          "title": "Eligible",
+          "type": "boolean"
+        },
+        "eligibility_note": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Eligibility Note"
         }
       },
       "required": [
         "id",
+        "route",
         "tonnes_per_tonne_output",
-        "quality_factor"
+        "price_inr_per_tonne",
+        "quality_measure",
+        "reference_quality",
+        "availability"
       ],
       "title": "RawMaterial",
       "type": "object"
@@ -145,11 +297,24 @@
             }
           ],
           "title": "Max"
+        },
+        "default": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Default"
         }
       },
       "required": [
         "min",
-        "max"
+        "max",
+        "default"
       ],
       "title": "TpdRange",
       "type": "object"
@@ -211,7 +376,7 @@
   "additionalProperties": false,
   "properties": {
     "schema_version": {
-      "const": 1,
+      "const": 2,
       "title": "Schema Version",
       "type": "integer"
     },
@@ -224,6 +389,18 @@
       "title": "Product Name",
       "type": "string"
     },
+    "output_unit_note": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Output Unit Note"
+    },
     "raw_materials": {
       "items": {
         "$ref": "#/$defs/RawMaterial"
@@ -231,6 +408,18 @@
       "minItems": 1,
       "title": "Raw Materials",
       "type": "array"
+    },
+    "default_route": {
+      "anyOf": [
+        {
+          "pattern": "^[a-z][a-z0-9_]*$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Default Route"
     },
     "kwh_per_tonne_output": {
       "anyOf": [
@@ -310,6 +499,13 @@
       ],
       "title": "Project Life Years"
     },
+    "provenance": {
+      "additionalProperties": {
+        "$ref": "#/$defs/Provenance"
+      },
+      "title": "Provenance",
+      "type": "object"
+    },
     "notes": {
       "anyOf": [
         {
@@ -328,6 +524,7 @@
     "product_id",
     "product_name",
     "raw_materials",
+    "default_route",
     "kwh_per_tonne_output",
     "kl_water_per_tonne_output",
     "water_quality",
