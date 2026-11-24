@@ -44,7 +44,6 @@ def test_normalise_name_missing_is_none(missing: object) -> None:
     assert normalise_name(missing) is None
 
 
-# ------------------------------------------------------------------ map_to_lgd (TODO)
 @pytest.fixture
 def name_map() -> pd.DataFrame:
     return pd.DataFrame(
@@ -55,7 +54,6 @@ def name_map() -> pd.DataFrame:
     )
 
 
-@pytest.mark.todo
 def test_map_to_lgd_maps_and_keeps_rows(name_map: pd.DataFrame) -> None:
     src = pd.DataFrame(
         {"district": ["AGRA", "Allahabad", "Bara Banki", "Atlantis", None], "v": [1, 2, 3, 4, 5]}
@@ -70,7 +68,6 @@ def test_map_to_lgd_maps_and_keeps_rows(name_map: pd.DataFrame) -> None:
     assert "lgd_district_code" not in src.columns, "must not modify the input"
 
 
-@pytest.mark.todo
 def test_map_to_lgd_unmatched_report(name_map: pd.DataFrame) -> None:
     src = pd.DataFrame({"district": ["Atlantis", "Lemuria", "Atlantis", None, "Agra"]})
     _, unmatched = map_to_lgd(src, "district", name_map)
@@ -80,7 +77,6 @@ def test_map_to_lgd_unmatched_report(name_map: pd.DataFrame) -> None:
     assert unmatched["n_rows"].tolist() == [2, 1]
 
 
-@pytest.mark.todo
 def test_map_to_lgd_rejects_ambiguous_name_map(name_map: pd.DataFrame) -> None:
     bad = pd.concat(
         [name_map, pd.DataFrame({"alias_normalised": ["agra"], "lgd_district_code": [999]})]

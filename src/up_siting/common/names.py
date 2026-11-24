@@ -91,11 +91,37 @@ def map_to_lgd(
     Practises: left joins, anti-joins, row-count invariants (validate= in pandas merge).
     """
     # 1. Check name_map is unique on alias_normalised; raise ValueError naming the duplicates.
+    name_map["alias_normalised"] = name_map["alias_normalised"].astype(str)
+    duplicates = name_map["alias_normalised"].duplicated(keep=False)
+    if duplicates.any():
+        dupes = name_map.loc[duplicates, "alias_normalised"].unique()
+        raise ValueError(f"name_map has duplicate alias_normalised: {dupes}")
     # 2. Copy df and add a temporary key column: df[name_col] passed through normalise_name.
+    df_copy = df.copy()
+    df_copy["_key"] = df_copy[name_col].apply(normalise_name)
     # 3. Left-join the key to name_map[["alias_normalised", "lgd_district_code"]].
     #    Hint: pandas merge has a `validate=` argument that enforces "many_to_one".
+    df_merged = df_copy.merge(
+        name_map[["alias_normalised", "lgd_district_code"]],
+        how="left",
+        left_on="_key",
+        right_on="alias_normalised",
+        validate="many_to_one",
+    )
     # 4. Cast lgd_district_code to "Int64", drop the temporary key, check the row count
     #    did not change.
+    df_merged["lgd_district_code"] = df_merged["lgd_district_code"].astype("Int64")
+    if len(df_merged) != len(df):
+        raise ValueError(f"row count changed after merge: before={len(df)}, after={len(df_merged)}")
     # 5. Build `unmatched`: rows with a non-null key but no code, grouped by the raw name,
     #    counted, sorted.
-    raise NotImplementedError("TODO(sage): implement map_to_lgd (see docs/TODO-sage.md)")
+    unmatched = (
+        df_merged[df_merged["lgd_district_code"].isna() & df_merged["_key"].notna()]
+        .groupby(name_col)
+        .size()
+        .reset_index(name="n_rows")
+        .sort_values(by=["n_rows", name_col], ascending=[False, True])
+    )
+    df_merged.drop(columns=["_key", "alias_normalised"], inplace=True)
+    # 6. Return (mapped, unmatched).
+    return df_merged, unmatched

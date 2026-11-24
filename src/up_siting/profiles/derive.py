@@ -14,12 +14,17 @@ def plot_acres(land: LandRule, tpd: float) -> float:
     Returns: fixed_acres + acres_per_tpd x tpd.
     Edge cases: tpd <= 0 -> ValueError; fixed_acres or acres_per_tpd is None (partner hasn't
                 told us yet) -> ValueError whose message names the missing field.
-    Practises: guarding against missing config, linear rules.
     """
     # 1. Reject tpd <= 0.
     # 2. Reject a None in either land field, naming which one.
     # 3. Return the linear rule.
-    raise NotImplementedError("TODO(sage): implement plot_acres")
+    if tpd <= 0:
+        raise ValueError(f"tpd must be > 0, got {tpd}")
+    if land.fixed_acres is None:
+        raise ValueError("fixed_acres is None")
+    if land.acres_per_tpd is None:
+        raise ValueError("acres_per_tpd is None")
+    return land.fixed_acres + land.acres_per_tpd * tpd
 
 
 def size_class(acres: float) -> SizeClass:
@@ -32,7 +37,16 @@ def size_class(acres: float) -> SizeClass:
     """
     # 1. Reject negative input.
     # 2. Walk the thresholds from smallest to largest, return the first class that fits.
-    raise NotImplementedError("TODO(sage): implement size_class")
+    if acres < 0:
+        raise ValueError(f"acres must be >= 0, got {acres}")
+    if acres < 1:
+        return SizeClass.MICRO
+    elif acres < 2:
+        return SizeClass.SMALL
+    elif acres < 5:
+        return SizeClass.MEDIUM
+    else:
+        return SizeClass.LARGE
 
 
 def annual_output_tonnes(profile: ProductProfile, tpd: float) -> float:
@@ -41,7 +55,11 @@ def annual_output_tonnes(profile: ProductProfile, tpd: float) -> float:
     Edge cases: tpd <= 0 -> ValueError; operating_days_per_year is None -> ValueError.
     Practises: reading nested config, explicit units in names.
     """
-    raise NotImplementedError("TODO(sage): implement annual_output_tonnes")
+    if tpd <= 0:
+        raise ValueError(f"tpd must be > 0, got {tpd}")
+    if profile.operating_days_per_year is None:
+        raise ValueError("operating_days_per_year is None")
+    return tpd * profile.operating_days_per_year
 
 
 def annual_feedstock_tonnes(profile: ProductProfile, tpd: float) -> dict[str, float]:
@@ -52,4 +70,10 @@ def annual_feedstock_tonnes(profile: ProductProfile, tpd: float) -> dict[str, fl
                 Do NOT apply quality_factor yet: what it multiplies is a "Decision needed".
     Practises: reuse (call annual_output_tonnes), dict comprehensions.
     """
-    raise NotImplementedError("TODO(sage): implement annual_feedstock_tonnes")
+    annual_output = annual_output_tonnes(profile, tpd)
+    feedstock = {}
+    for raw in profile.raw_materials:
+        if raw.tonnes_per_tonne_output is None:
+            raise ValueError(f"raw_material {raw.id} has tonnes_per_tonne_output = None")
+        feedstock[raw.id] = annual_output * raw.tonnes_per_tonne_output
+    return feedstock

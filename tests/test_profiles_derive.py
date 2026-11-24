@@ -12,8 +12,6 @@ from up_siting.profiles.derive import (
 )
 from up_siting.profiles.schema import LandRule, ProductProfile, SizeClass
 
-pytestmark = pytest.mark.todo
-
 
 def _profile(**overrides: Any) -> ProductProfile:
     base: dict[str, Any] = {
